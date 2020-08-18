@@ -1,0 +1,24 @@
+/**
+ *	@author [author]
+ *	@version [version]
+ *	@description module log
+ * 
+ */
+export class Log {
+	constructor(){
+		this.msg = null;
+		this.debug = !1;
+	}
+
+	static error( msg ){
+		console.error( `Socket Error - [ ${msg} ]` );
+	}
+
+	static warn( msg ){
+		console.warn( `Socket Warning - [ ${msg} ]` );
+	}
+
+	static alert( msg ) {
+		console.log( `Socket alert - [ ${msg} ]` );
+	}
+}
