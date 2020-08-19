@@ -7,6 +7,7 @@
 import Queue from './components/queue';
 import Notification from './components/notification';
 import Log from './components/log';
+import { isObject, isString, isEmptyObject } from './components/utils';
 export class socketQueue {
 
   constructor(){
@@ -18,15 +19,19 @@ export class socketQueue {
     this.WSState = null;
   }
 
-  init( url, protocol, notice = {} ){
-    if ( url === void 0 ) {
-      return Log.error(` WebSocket'url is empty `);
-    }
+  init( ws, notice = {} ){
     if ( 'WebSocket' in window ) {
       return Log.warn(` Your Browser Dose Not Support WebSocket `);
     }
-    this.url = url;
-    this.protocol = protocol;
+
+    isObject( ws ) && (this.url = ws.url, this.protocol = ws.protocol);
+
+    isString( ws ) && (this.url = ws);
+
+    if ( isEmptyObject(this.url) ) {
+      return Log.error(` WebSocket'url is empty `);
+    }
+
     this.initSocket();
     this.queue = new Queue();
     this.nfc = new Notification();
@@ -58,7 +63,7 @@ export class socketQueue {
    * @return {[type]}
    */
   send(data, fun = () => {}){
-    this.WSState === 1 ? (
+    this.WSState === 1 && (
       this.socket.send(data),
       fun()
     );
@@ -82,8 +87,11 @@ export class socketQueue {
   destroy(){
     this.socket.close();
     this.socket = null;
-    this.url = null;
     this.queue = null;
+    this.nfc = null;
+    this.url = null;
+    this.protocol = null;
+    this.WSState = null;
   }
   /**
    * @description 创建WS实例
@@ -91,6 +99,7 @@ export class socketQueue {
    */
   static initSocket(){
     try {
+      isEmptyObject(this.protocol) && Log.warn( `WebSocket protocol is empty` );
       this.socket = new WebSocket( this.url, this.protocol );
       Log.alert(' WebSocket is created ');
       this.stateDispatch( this.socket.readyState );
