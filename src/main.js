@@ -17,25 +17,11 @@ export class socketQueue {
     this.url = null;
     this.protocol = null;
     this.WSState = null;
-  }
-
-  init( socket, notice = {} ){
-    if ( 'WebSocket' in window ) {
-      return Log.warn(` Your Browser Dose Not Support WebSocket `);
-    }
-
-    isObject( socket ) && (this.url = socket.url, this.protocol = socket.protocol);
-
-    isString( socket ) && (this.url = socket);
-
-    if ( isEmptyObject(this.url) ) {
-      return Log.error(` WebSocket'url is empty `);
-    }
-
-    this.initSocket();
-    this.queue = new Queue();
-    this.nfc = new Notification();
-    this.nfc.init(notice);
+    this.beforeOpen = this.beforeOpen.bind(this);
+    this.open = this.open.bind(this);
+    this.beforeClosed = this.beforeClosed.bind(this);
+    this.closed = this.closed.bind(this);
+    this.error = this.error.bind(this);
   }
   /**
    * @description 建立WS连接前
@@ -58,61 +44,6 @@ export class socketQueue {
    */
   closed(e){}
   /**
-   * @description 发送WS数据
-   * @param  {[type]}
-   * @return {[type]}
-   */
-  send(data, fun = () => {}){
-    this.WSState === 1 && (
-      this.socket.send(data),
-      fun()
-    );
-  }
-  /**
-   * @description 获取接受的第一条队列数据
-   * @return 返回队列的第一条数据
-   */
-  getData(){
-    return this.queue.next();
-  }
-  /**
-   * @description 发送错误时回调
-   * @return {[type]}
-   */
-  error(err){}
-  /**
-   * @description 销毁当前WS调用实例
-   * @return {[type]}
-   */
-  destroy(){
-    this.socket.close();
-    this.socket = null;
-    this.queue = null;
-    this.nfc = null;
-    this.url = null;
-    this.protocol = null;
-    this.WSState = null;
-  }
-  /**
-   * @description 创建WS实例
-   * @return {[type]}
-   */
-  static initSocket(){
-    try {
-      isEmptyObject(this.protocol) && Log.warn( `WebSocket protocol is empty` );
-      this.socket = new WebSocket( this.url, this.protocol );
-      Log.alert(' WebSocket is created ');
-      this.stateDispatch( this.socket.readyState );
-      this.openSocket();
-      this.reloadSocket();
-      this.errorSocket();
-      this.closeSocket();
-    }
-    catch ( e ) {
-      Log.error( e );
-    }
-  }
-  /**
    * @description WS状态分发
    * @param  {[type]}
    * @return {[type]}
@@ -122,19 +53,19 @@ export class socketQueue {
     switch ( $value ) {
       case 0:
         Log.alert(' WebSocket is connecting... ');
-        this.beforeOpen();
+        // this.beforeOpen();
         break;
       case 1:
         Log.alert(' WebSocket is connect! ');
-        this.open();
+        // this.open();
         break;
       case 2:
         Log.alert(' WebSocket will close... ');
-        this.beforeClosed();
+        // this.beforeClosed();
         break;
       case 3:
         Log.warn(' WebSocket is closed! ');
-        this.closed();
+        // this.closed();
         break;
     }
   }
@@ -180,5 +111,81 @@ export class socketQueue {
       this.closed(evt);
     }
   }
+  /**
+   * [init description]
+   * @param  {Object} options [description]
+   * @return {[type]}         [description]
+   */
+  init( options = {} ){
+    if ( !'WebSocket' in window ) {
+      return Log.warn(` Your Browser Dose Not Support WebSocket `);
+    }
+    if ( isEmptyObject(options) ) {
+      return Log.error(` WebSocket Can't Resolve Empty Options`);
+    }
 
+    const socket = options.socket,
+      notice = options.notice;
+
+    isObject( socket ) && (this.url = socket.url, this.protocol = socket.protocol);
+
+    isString( socket ) && (this.url = socket);
+
+    isEmptyObject(this.protocol) && Log.warn( `WebSocket protocol is empty` );
+
+    if ( isEmptyObject(this.url) ) {
+      return Log.error(` WebSocket'url is empty `);
+    }
+    try {
+      this.socket = new WebSocket( this.url, this.protocol );
+      Log.alert(' WebSocket is created ');
+      this.constructor.stateDispatch( this.socket.readyState );
+      this.constructor.openSocket();
+      this.constructor.reloadSocket();
+      this.constructor.errorSocket();
+      this.constructor.closeSocket();
+      this.queue = new Queue();
+      this.nfc = new Notification();
+      this.nfc.init(socket.notice);
+    }
+    catch ( e ) {
+      Log.error( e );
+    }
+  }
+  /**
+   * @description 发送WS数据
+   * @param  {[type]}
+   * @return {[type]}
+   */
+  send(data, fun = () => {}){
+    this.WSState === 1 && (
+      this.socket.send(data),
+      fun()
+    );
+  }
+  /**
+   * @description 获取接受的第一条队列数据
+   * @return 返回队列的第一条数据
+   */
+  getData(){
+    return this.queue.next();
+  }
+  /**
+   * @description 发送错误时回调
+   * @return {[type]}
+   */
+  error(err){}
+  /**
+   * @description 销毁当前WS调用实例
+   * @return {[type]}
+   */
+  destroy(){
+    this.socket.close();
+    this.socket = null;
+    this.queue = null;
+    this.nfc = null;
+    this.url = null;
+    this.protocol = null;
+    this.WSState = null;
+  }
 }

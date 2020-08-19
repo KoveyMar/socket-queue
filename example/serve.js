@@ -16,10 +16,14 @@ let response_msg = 0;
 
 const ws = require('ws');
 
-const server = ws.Server;
+const WS_Server = new ws.Server( { port: 9000 } );
 
-const WS_Server = new server({
-	port: 9000
+WS_Server.on('open', function(){
+	console.log('node server ws connected');
+});
+
+WS_Server.on('close', function(){
+	console.log('node server ws disconnected');
 });
 
 WS_Server.on('connection', function( ws ){
@@ -36,6 +40,6 @@ WS_Server.on('connection', function( ws ){
 			ws.send( ` response msg ${response_msg} ` , (err) => {
 				console.error( `SERVER SEND MESSAGE IS ERROR ------- ${err}` );
 			});
-		}, 10e3);
+		}, 10e2);
 	});
 });

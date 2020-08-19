@@ -20,6 +20,82 @@ export default class notification {
 		this.noticeOptions = {};
 		this.options = null;
 		this.autoClose = !0;
+    	this.done = this.done.bind(this);
+    	this.fail = this.fail.bind(this);
+    	this.show = this.show.bind(this);
+    	this.click = this.click.bind(this);
+    	this.close = this.close.bind(this);
+    	this.error = this.error.bind(this);
+	}
+	/**
+	 * @description 实例初始化成功回调
+	 * @return {Function}
+	 */
+	done(){}
+	/**
+	 * @description 实例初始化失败回调
+	 * @return {[type]}
+	 */
+	fail(){}
+	/**
+	 * @description 通知显示时，实例回调
+	 * @return {[type]}
+	 */
+	show(){}
+	/**
+	 * @description 点击通知时，实例回调
+	 * @return {[type]}
+	 */
+	click(){}
+	/**
+	 * @description 关闭通知时，实例回调
+	 * @return {[type]}
+	 */
+	close(){}
+	/**
+	 * @description 发送错误时，实例回调
+	 * @return {[type]}
+	 */
+	error(){}
+	/**
+	 * @description 关闭事件
+	 * @return {[type]}
+	 */
+	static closeEvt(){
+		this.ntf.onclose = () => {
+			this.close();
+		}
+	}
+
+	static errorEvt(){
+		this.ntf.onerror = (e) => {
+			this.error(e);
+		}
+	}
+
+	static clickEvt(){
+		this.ntf.onclick = (e) => {
+			e.preventDefault();
+			this.click();
+		} 
+	}
+
+	static showEvt(){
+		this.ntf.onshow = () => {
+			this.show();
+			this.autoClose && setTimeout( () => {
+				this.ntf.close();
+			}, 4000);
+		}
+	}
+	/**
+	 * @description 事件分发
+	 */
+	static EvtDispatch(){
+		this.constructor.closeEvt();
+		this.constructor.errorEvt();
+		this.constructor.clickEvt();
+		this.constructor.showEvt();
 	}
 	/**
 	 * @param  notice {Object} { dir: 'auto', lang: '', tag: 'ID', body: 'body', icon: 'URL'}
@@ -70,7 +146,7 @@ export default class notification {
 		if ( Notification.permission === 'granted' ) {
 			this.ntf = new Notification( this.title, _options );
 			this.done();
-			this.EvtDispatch();
+			this.constructor.EvtDispatch();
 		}
 		else if ( Notification.permission === 'denied' || Notification.permission === 'default') {
 			Notification.requestPermission()
@@ -78,83 +154,13 @@ export default class notification {
 				if ( res === 'granted' ) {
 					this.ntf = new Notification( this.title, _options );
 					this.done();
-					this.EvtDispatch();					
+					this.constructor.EvtDispatch();					
 				}
 
 			})
 			.catch( err => {
 				this.fail();
 			});
-		}
-	}
-	/**
-	 * @description 实例初始化成功回调
-	 * @return {Function}
-	 */
-	done(){}
-	/**
-	 * @description 实例初始化失败回调
-	 * @return {[type]}
-	 */
-	fail(){}
-	/**
-	 * @description 通知显示时，实例回调
-	 * @return {[type]}
-	 */
-	show(){}
-	/**
-	 * @description 点击通知时，实例回调
-	 * @return {[type]}
-	 */
-	click(){}
-	/**
-	 * @description 关闭通知时，实例回调
-	 * @return {[type]}
-	 */
-	close(){}
-	/**
-	 * @description 发送错误时，实例回调
-	 * @return {[type]}
-	 */
-	error(){}
-	/**
-	 * @description 事件分发
-	 */
-	static EvtDispatch(){
-		this.closeEvt();
-		this.errorEvt();
-		this.clickEvt();
-		this.showEvt();
-	}
-	/**
-	 * @description 关闭事件
-	 * @return {[type]}
-	 */
-	static closeEvt(){
-		this.ntf.onclose = () => {
-			this.close();
-		}
-	}
-
-	static errorEvt(){
-		this.ntf.onerror = (e) => {
-			this.error(e);
-		}
-	}
-
-	static clickEvt(){
-		this.ntf.onclick = (e) => {
-			e.preventDefault();
-			this.click();
-		} 
-	}
-
-	static showEvt(){
-		this.ntf.onshow = () => {
-			this.show();
-			this.autoClose && setTimeout( () => {
-				this.ntf.close();
-			}, 4000);
 		}
 	}
 }
