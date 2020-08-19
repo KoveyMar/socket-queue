@@ -17,11 +17,12 @@ export class socketQueue {
     this.url = null;
     this.protocol = null;
     this.WSState = null;
-    this.beforeOpen = this.beforeOpen.bind(this);
+    // this.beforeOpen = this.beforeOpen.bind(this);
     this.open = this.open.bind(this);
-    this.beforeClosed = this.beforeClosed.bind(this);
+    // this.beforeClosed = this.beforeClosed.bind(this);
     this.closed = this.closed.bind(this);
     this.error = this.error.bind(this);
+    this.send = this.send.bind(this);
   }
   /**
    * @description 建立WS连接前
@@ -52,41 +53,17 @@ export class socketQueue {
     this.WSState = $value;
     switch ( $value ) {
       case 0:
-        Log.alert(' WebSocket is connecting... ');
         // this.beforeOpen();
         break;
       case 1:
-        Log.alert(' WebSocket is connect! ');
         // this.open();
         break;
       case 2:
-        Log.alert(' WebSocket will close... ');
         // this.beforeClosed();
         break;
       case 3:
-        Log.warn(' WebSocket is closed! ');
         // this.closed();
         break;
-    }
-  }
-  /**
-   * @description WS信息接收
-   * @return {[type]}
-   */
-  static openSocket(){
-
-    this.socket.onopen = (e) => {
-      // this.socket.send();
-      this.open();
-    }
-
-    this.socket.onmessage = (e) => {
-      const data = e.data;
-      this.queue.add(data);
-      const options = {
-        body: data
-      };
-      this.ntf.showNotification(options);
     }
   }
   /**
@@ -96,20 +73,6 @@ export class socketQueue {
   static reloadSocket(){
     //TODO
     setTimeout( () => {}, 2000);
-  }
-
-  static errorSocket(){
-    this.socket.onerror = (evt) => {
-      Log.error( evt.reason );
-      this.error( evt );
-    }
-  }
-
-  static closeSocket(){
-    this.socket.onclose = (evt) => {
-      Log.warn( evt.reason );
-      this.closed(evt);
-    }
   }
   /**
    * [init description]
@@ -139,14 +102,39 @@ export class socketQueue {
     try {
       this.socket = new WebSocket( this.url, this.protocol );
       Log.alert(' WebSocket is created ');
-      this.constructor.stateDispatch( this.socket.readyState );
-      this.constructor.openSocket();
-      this.constructor.reloadSocket();
-      this.constructor.errorSocket();
-      this.constructor.closeSocket();
+
+      // this.constructor.stateDispatch( this.socket.readyState );
+
+      this.socket.onopen = (e) => {
+        Log.alert(' WebSocket is connect! ');
+        Log.alert(' WebSocket is open! ');
+        this.open(e);
+      }
+
+      this.socket.onmessage = (e) => {
+        const data = e.data;
+        const options = {
+          body: data
+        };
+        this.queue.add(data);
+        this.nfc.showNotification(options);
+        Log.alert(`New Message - ${e}`);
+      }
+
+      this.socket.onerror = (evt) => {
+        Log.error(`WebSocket is error, ${evt.reason}`);
+        this.error( evt );
+      }
+
+      this.socket.onclose = (evt) => {
+        Log.warn(`WebSocket will close..., ${evt.reason}`);
+        this.closed(evt);
+      }
+
+      // this.constructor.reloadSocket();
       this.queue = new Queue();
       this.nfc = new Notification();
-      this.nfc.init(socket.notice);
+      this.nfc.init(notice);
     }
     catch ( e ) {
       Log.error( e );

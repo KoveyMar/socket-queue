@@ -62,29 +62,29 @@ export default class notification {
 	 * @return {[type]}
 	 */
 	static closeEvt(){
-		this.ntf.onclose = () => {
-			this.close();
-		}
+		// notification.ntf.onclose = () => {
+		// 	notification.close();
+		// }
 	}
 
 	static errorEvt(){
-		this.ntf.onerror = (e) => {
-			this.error(e);
-		}
+		// notification.ntf.onerror = (e) => {
+		// 	notification.error(e);
+		// }
 	}
 
 	static clickEvt(){
-		this.ntf.onclick = (e) => {
-			e.preventDefault();
-			this.click();
-		} 
+		// notification.ntf.onclick = (e) => {
+		// 	e.preventDefault();
+		// 	notification.click();
+		// } 
 	}
 
 	static showEvt(){
-		this.ntf.onshow = () => {
-			this.show();
-			this.autoClose && setTimeout( () => {
-				this.ntf.close();
+		notification.ntf.onshow = () => {
+			// notification.show();
+			notification.autoClose && setTimeout( () => {
+				notification.ntf.close();
 			}, 4000);
 		}
 	}
@@ -92,10 +92,10 @@ export default class notification {
 	 * @description 事件分发
 	 */
 	static EvtDispatch(){
-		this.constructor.closeEvt();
-		this.constructor.errorEvt();
-		this.constructor.clickEvt();
-		this.constructor.showEvt();
+		notification.closeEvt();
+		notification.errorEvt();
+		notification.clickEvt();
+		notification.showEvt();
 	}
 	/**
 	 * @param  notice {Object} { dir: 'auto', lang: '', tag: 'ID', body: 'body', icon: 'URL'}
