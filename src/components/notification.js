@@ -4,12 +4,21 @@
  *	@description module notification
  * 
  */
-import Log from 'log';
-export class notification {
+import Log from './log';
+import { isObject, isEmptyObject } from './utils';
+export default class notification {
+	/**
+	 * [constructor description]
+	 * @attribute [noticeOptions] 	实例对象接收配置
+	 * @attribute [options]			默认配置参数
+	 * @attribute [autoClose]		是否自动关闭
+	 * @return {[type]} [description]
+	 */
 	constructor(){
 		this.ntf = null;
 		this.title = '新的socket消息';
-		this.notice = null;
+		this.noticeOptions = {};
+		this.options = null;
 		this.autoClose = !0;
 	}
 	/**
@@ -20,10 +29,28 @@ export class notification {
 		if ( !("Notification" in window) ) {
 			return Log.warn( `Your Browser Does Not Support Desktop Notification` );
 		}
-		if ( notice ) {
+
+		isEmptyObject(notice) && Log.warn( `Notification Can't Resovle Empty Options` );
+
+		this.options = {
+			dir: 'auto',
+			lang: 'zh-cn',
+			badge: '',
+			body: '',
+			tag: '',
+			icon: '',
+			image: '',
+			data: '',
+			vibrate: '',
+			renotify: !1,
+			requireInteraction: !1
+		};
+
+		if ( isObject(notice) ) {
+			this.noticeOptions = notice;
 			this.title = notice.title;
 			this.options = notice.options;
-			this.autoClose = notice.autoClose;
+			this.autoClose = !isEmptyObject(notice.autoClose) ? notice.autoClose : !0;
 			this.done = notice.done || new Function();
 			this.fail = notice.fail || new Function();
 			this.close = notice.OnClose || new Function();
@@ -31,20 +58,25 @@ export class notification {
 			this.click = notice.OnClick || new Function();
 			this.error = notice.OnError || new Function();
 		}
-		this.showNotification();
+		Notification.requestPermission();
 	}
-	showNotification(){
+	showNotification( options = {} ){
 
-		if ( Notification.permission === "granted" ) {
-			this.ntf = new Notification( this.title, this.options );
+		let _options = {
+			...options,
+			...this.options
+		};
+
+		if ( Notification.permission === 'granted' ) {
+			this.ntf = new Notification( this.title, _options );
 			this.done();
 			this.EvtDispatch();
 		}
-		else if ( Notification.permission !== 'denied' ) {
+		else if ( Notification.permission === 'denied' || Notification.permission === 'default') {
 			Notification.requestPermission()
 			.then( res => {
 				if ( res === 'granted' ) {
-					this.ntf = new Notification( this.title, this.options );
+					this.ntf = new Notification( this.title, _options );
 					this.done();
 					this.EvtDispatch();					
 				}

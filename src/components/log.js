@@ -4,7 +4,7 @@
  *	@description module log
  * 
  */
-export class Log {
+export default class Log {
 	constructor(){
 		this.msg = null;
 		this.debug = !1;

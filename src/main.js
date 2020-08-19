@@ -19,14 +19,14 @@ export class socketQueue {
     this.WSState = null;
   }
 
-  init( ws, notice = {} ){
+  init( socket, notice = {} ){
     if ( 'WebSocket' in window ) {
       return Log.warn(` Your Browser Dose Not Support WebSocket `);
     }
 
-    isObject( ws ) && (this.url = ws.url, this.protocol = ws.protocol);
+    isObject( socket ) && (this.url = socket.url, this.protocol = socket.protocol);
 
-    isString( ws ) && (this.url = ws);
+    isString( socket ) && (this.url = socket);
 
     if ( isEmptyObject(this.url) ) {
       return Log.error(` WebSocket'url is empty `);
@@ -146,12 +146,16 @@ export class socketQueue {
 
     this.socket.onopen = (e) => {
       // this.socket.send();
+      this.open();
     }
 
     this.socket.onmessage = (e) => {
       const data = e.data;
       this.queue.add(data);
-      this.ntf.showNotification();
+      const options = {
+        body: data
+      };
+      this.ntf.showNotification(options);
     }
   }
   /**
@@ -159,6 +163,7 @@ export class socketQueue {
    * @return {[type]}
    */
   static reloadSocket(){
+    //TODO
     setTimeout( () => {}, 2000);
   }
 

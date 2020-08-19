@@ -11,14 +11,7 @@
  *
  * 
  *******************************/
-// var http = require('http');
 
-// http.createServer( function( request, response ){
-//   response.writeHead(200, { 'Context-Type': 'text/plain'} );
-
-//   response.end( 'This Is Http Request Base On Node.js ' );
-// }).listen(9000);
-// 
 let response_msg = 0;
 
 const ws = require('ws');
