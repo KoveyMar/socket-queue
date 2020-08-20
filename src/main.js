@@ -37,7 +37,7 @@ export class socketQueue {
    * @description 建立WS连接前
    * @return {[type]}
    */
-  beforeOpen(){}
+  // beforeOpen(){}
   /**
    * @description 建立WS连接后
    * @return {[type]}
@@ -47,7 +47,7 @@ export class socketQueue {
    * @description 连接关闭前
    * @return {[type]}
    */
-  beforeClosed(){}
+  // beforeClosed(){}
   /**
    * @description 连接关闭后
    * @return {[type]}
@@ -133,15 +133,15 @@ export class socketQueue {
         Log.error(`WebSocket status '${err.type}' - ${err.reason}`);
         // console.log('%O', err)
         this.WSState = err.target.readyState;
-        this.rebuildSocket();
+        this.rebuildSocket(err.type);
         this.error( err );
       }
 
       this.socket.onclose = (evt) => {
         Log.warn(`WebSocket status '${evt.type}' - ${evt.reason}`);
-        // console.log('%O', evt, this.socket)
+        // console.log('%O', evt)
         this.WSState = evt.target.readyState;
-        this.rebuildSocket();
+        this.rebuildSocket(evt.type);
         this.closed( evt );
       }
 
@@ -157,16 +157,18 @@ export class socketQueue {
    * @description 断线重连
    * @return {[type]}
    */
-  rebuildSocket(){
+  rebuildSocket(service){
     // this.destroy();
+    if (this.resolveConnect) return;
+    
     this.resolveConnect = !0;
-
+    
     let timer = null;
 
     const FN = (num) => {
       return new Promise( ( resolve, reject ) => {
         timer = setTimeout( () => {
-          Log.Info( `WebSocket state ${this.WSState}, in ${num} connect WebSocket` );
+          Log.Info( `WebSocket reconnect from ${service}, state ${this.WSState}, in ${num} connect WebSocket` );
           this.initWSocket();
           this.reConnect(num);
           this.resolveConnect = !1;

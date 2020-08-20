@@ -19,7 +19,7 @@ export default class Queue {
 	 * @description 队列是否为空
 	 * @return {Boolean}
 	 */
-	get isEmpty(){
+	isEmpty(){
 		return this.item_queue.length === 0;
 	}
 	/**
@@ -27,7 +27,14 @@ export default class Queue {
 	 * @return {Function}
 	 */
 	next(){
-		return this.item_queue.length == 0 ? null : this.item_queue.shift();
+		return this.isEmpty() ? null : this.item_queue.shift();
+	}
+	/**
+	 * @description 队列长度
+	 * @return {[type]} [description]
+	 */
+	get length(){
+		return this.item_queue.length;
 	}
 
 	static removeLastChild( item ){
