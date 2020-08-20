@@ -1,5 +1,5 @@
 {
-  "name": "ws-message-queue",
+  "name": "ws-msg-queue",
   "version": "1.0.0",
   "description": "socket message queue",
   "main": "index.js",
