@@ -124,7 +124,8 @@ export class socketQueue {
         const options = {
           body: data
         };
-        this.queue.add( { data: data, response: evt } );
+        // this.queue.add( { data: data, response: evt } );
+        this.queue.add( data );
         this.nfc.showNotification(options);
         Log.Info(`WebSocket status '${evt.type}', New Message - ${data}`);
       }
@@ -158,11 +159,10 @@ export class socketQueue {
    * @return {[type]}
    */
   rebuildSocket(service){
-    // this.destroy();
     if (this.resolveConnect) return;
     
     this.resolveConnect = !0;
-    
+
     let timer = null;
 
     const FN = (num) => {
