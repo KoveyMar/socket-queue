@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx babel src/ --out-dir lib",
+    "dopublish": "npm run build && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
