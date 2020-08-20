@@ -19,3 +19,7 @@ export function isString( str ) {
 export function isEmptyObject( obj ) {
 	return obj === null || (obj === void 0 && typeof obj === 'undefined');
 }
+
+export function isNumber( number ) {
+	return !Number.isNaN( Number( number ) ) && typeof number === 'number';
+}

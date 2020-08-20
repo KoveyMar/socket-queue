@@ -18,7 +18,19 @@ export default class notification {
 		this.ntf = null;
 		this.title = '新的socket消息';
 		this.noticeOptions = {};
-		this.options = null;
+		this.options = {
+			dir: 'auto',
+			lang: 'zh-cn',
+			badge: '',
+			body: '',
+			tag: '',
+			icon: '',
+			image: '',
+			data: '',
+			vibrate: '',
+			renotify: !1,
+			requireInteraction: !1
+		};
 		this.autoClose = !0;
     	this.done = this.done.bind(this);
     	this.fail = this.fail.bind(this);
@@ -61,71 +73,67 @@ export default class notification {
 	 * @description 关闭事件
 	 * @return {[type]}
 	 */
-	static closeEvt(){
-		// notification.ntf.onclose = () => {
-		// 	notification.close();
-		// }
+	closeEvt(){
+		this.ntf.onclose = () => {
+			this.close();
+		}
 	}
-
-	static errorEvt(){
-		// notification.ntf.onerror = (e) => {
-		// 	notification.error(e);
-		// }
+	/**
+	 * @description 错误事件
+	 * @return {[type]} [description]
+	 */
+	errorEvt(){
+		this.ntf.onerror = (e) => {
+			this.error(e);
+		}
 	}
-
-	static clickEvt(){
-		// notification.ntf.onclick = (e) => {
-		// 	e.preventDefault();
-		// 	notification.click();
-		// } 
+	/**
+	 * @description 点击事件
+	 * @return {[type]} [description]
+	 */
+	clickEvt(){
+		this.ntf.onclick = (e) => {
+			e.preventDefault();
+			this.click();
+		} 
 	}
-
-	static showEvt(){
-		notification.ntf.onshow = () => {
-			// notification.show();
-			notification.autoClose && setTimeout( () => {
-				notification.ntf.close();
+	/**
+	 * 显示弹窗事件
+	 * @return {[type]} [description]
+	 */
+	showEvt(){
+		this.ntf.onshow = () => {
+			this.show();
+			this.autoClose && setTimeout( () => {
+				this.ntf.close();
 			}, 4000);
 		}
 	}
 	/**
 	 * @description 事件分发
 	 */
-	static EvtDispatch(){
-		notification.closeEvt();
-		notification.errorEvt();
-		notification.clickEvt();
-		notification.showEvt();
+	stateDispatch(){
+		this.closeEvt();
+		this.errorEvt();
+		this.clickEvt();
+		this.showEvt();
 	}
 	/**
 	 * @param  notice {Object} { dir: 'auto', lang: '', tag: 'ID', body: 'body', icon: 'URL'}
 	 * @return {[type]}
 	 */
-	init(notice = {}){
+	init(notice){
 		if ( !("Notification" in window) ) {
 			return Log.warn( `Your Browser Does Not Support Desktop Notification` );
 		}
 
-		isEmptyObject(notice) && Log.warn( `Notification Can't Resovle Empty Options` );
-
-		this.options = {
-			dir: 'auto',
-			lang: 'zh-cn',
-			badge: '',
-			body: '',
-			tag: '',
-			icon: '',
-			image: '',
-			data: '',
-			vibrate: '',
-			renotify: !1,
-			requireInteraction: !1
-		};
+		isEmptyObject(notice) && Log.warn( `Notification Resovle Default Options` );
 
 		if ( isObject(notice) ) {
+			Log.warn(`Notification Resovle Options`);
 			this.noticeOptions = notice;
-			this.title = notice.title;
-			this.options = notice.options;
+			this.title = notice.title || '新的socket消息';
+			this.options = notice.options || this.options;
 			this.autoClose = !isEmptyObject(notice.autoClose) ? notice.autoClose : !0;
 			this.done = notice.done || new Function();
 			this.fail = notice.fail || new Function();
@@ -134,31 +142,32 @@ export default class notification {
 			this.click = notice.OnClick || new Function();
 			this.error = notice.OnError || new Function();
 		}
-		Notification.requestPermission();
+		(Notification.permission === 'denied' || Notification.permission === 'default') && Notification.requestPermission();
 	}
 	showNotification( options = {} ){
 
 		let _options = {
-			...options,
-			...this.options
+			...this.options,
+			...options
 		};
-
 		if ( Notification.permission === 'granted' ) {
 			this.ntf = new Notification( this.title, _options );
 			this.done();
-			this.constructor.EvtDispatch();
+			this.stateDispatch();
 		}
-		else if ( Notification.permission === 'denied' || Notification.permission === 'default') {
+		else if ( Notification.permission === 'denied' || Notification.permission === 'default' ) {
 			Notification.requestPermission()
 			.then( res => {
+				Log.warn(`Notification Has Been Allowed Work`);
 				if ( res === 'granted' ) {
 					this.ntf = new Notification( this.title, _options );
 					this.done();
-					this.constructor.EvtDispatch();					
+					this.stateDispatch();			
 				}
 
 			})
 			.catch( err => {
+				Log.warn( `Notification Could Not Resovle` );
 				this.fail();
 			});
 		}

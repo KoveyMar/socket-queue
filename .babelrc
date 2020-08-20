@@ -8,5 +8,6 @@
               "loose": true
           }
       ]
-    ]
+    ],
+    "comments": false
 }

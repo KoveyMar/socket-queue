@@ -7,7 +7,7 @@
 import Queue from './components/queue';
 import Notification from './components/notification';
 import Log from './components/log';
-import { isObject, isString, isEmptyObject } from './components/utils';
+import { isObject, isString, isEmptyObject, isNumber } from './components/utils';
 export class socketQueue {
 
   constructor(){
@@ -15,14 +15,23 @@ export class socketQueue {
     this.queue = null;
     this.nfc = null;
     this.url = null;
+    this.retime = 5;
     this.protocol = null;
     this.WSState = null;
+    this.noticeOptions = null;
+    this.resolveConnect = !1;
+    this.resolveConnectTime = 5;
     // this.beforeOpen = this.beforeOpen.bind(this);
     this.open = this.open.bind(this);
     // this.beforeClosed = this.beforeClosed.bind(this);
     this.closed = this.closed.bind(this);
     this.error = this.error.bind(this);
     this.send = this.send.bind(this);
+    this.reConnect = this.reConnect.bind(this);
+    this.getData = this.getData.bind(this);
+    this.destroy = this.destroy.bind(this);
+    this.initWSocket = this.initWSocket.bind(this);
+    this.rebuildSocket = this.rebuildSocket.bind(this);
   }
   /**
    * @description 建立WS连接前
@@ -45,101 +54,11 @@ export class socketQueue {
    */
   closed(e){}
   /**
-   * @description WS状态分发
-   * @param  {[type]}
-   * @return {[type]}
+   * @description 断线重连回调
+   * @param  {[type]} number [次数]
+   * @return {[type]}        [description]
    */
-  static stateDispatch( $value ) {
-    this.WSState = $value;
-    switch ( $value ) {
-      case 0:
-        // this.beforeOpen();
-        break;
-      case 1:
-        // this.open();
-        break;
-      case 2:
-        // this.beforeClosed();
-        break;
-      case 3:
-        // this.closed();
-        break;
-    }
-  }
-  /**
-   * @description 断线重连
-   * @return {[type]}
-   */
-  static reloadSocket(){
-    //TODO
-    setTimeout( () => {}, 2000);
-  }
-  /**
-   * [init description]
-   * @param  {Object} options [description]
-   * @return {[type]}         [description]
-   */
-  init( options = {} ){
-    if ( !'WebSocket' in window ) {
-      return Log.warn(` Your Browser Dose Not Support WebSocket `);
-    }
-    if ( isEmptyObject(options) ) {
-      return Log.error(` WebSocket Can't Resolve Empty Options`);
-    }
-
-    const socket = options.socket,
-      notice = options.notice;
-
-    isObject( socket ) && (this.url = socket.url, this.protocol = socket.protocol);
-
-    isString( socket ) && (this.url = socket);
-
-    isEmptyObject(this.protocol) && Log.warn( `WebSocket protocol is empty` );
-
-    if ( isEmptyObject(this.url) ) {
-      return Log.error(` WebSocket'url is empty `);
-    }
-    try {
-      this.socket = new WebSocket( this.url, this.protocol );
-      Log.alert(' WebSocket is created ');
-
-      // this.constructor.stateDispatch( this.socket.readyState );
-
-      this.socket.onopen = (e) => {
-        Log.alert(' WebSocket is connect! ');
-        Log.alert(' WebSocket is open! ');
-        this.open(e);
-      }
-
-      this.socket.onmessage = (e) => {
-        const data = e.data;
-        const options = {
-          body: data
-        };
-        this.queue.add(data);
-        this.nfc.showNotification(options);
-        Log.alert(`New Message - ${e}`);
-      }
-
-      this.socket.onerror = (evt) => {
-        Log.error(`WebSocket is error, ${evt.reason}`);
-        this.error( evt );
-      }
-
-      this.socket.onclose = (evt) => {
-        Log.warn(`WebSocket will close..., ${evt.reason}`);
-        this.closed(evt);
-      }
-
-      // this.constructor.reloadSocket();
-      this.queue = new Queue();
-      this.nfc = new Notification();
-      this.nfc.init(notice);
-    }
-    catch ( e ) {
-      Log.error( e );
-    }
-  }
+  reConnect(number){}
   /**
    * @description 发送WS数据
    * @param  {[type]}
@@ -168,12 +87,133 @@ export class socketQueue {
    * @return {[type]}
    */
   destroy(){
-    this.socket.close();
+    this.socket && this.socket.close();
     this.socket = null;
     this.queue = null;
     this.nfc = null;
     this.url = null;
+    this.retime = 5;
     this.protocol = null;
     this.WSState = null;
+    this.noticeOptions = null;
+    this.resolveConnect = !1;
+    this.resolveConnectTime = 5;
+  }
+  /**
+   * @description 创建WEBSOCKET对象
+   * @return {[type]} [description]
+   */
+  initWSocket(){
+    try {
+      this.socket = new WebSocket( this.url, this.protocol );
+      Log.Info(' WebSocket is created ');
+
+      this.socket.onopen = (e) => {
+        Log.Info(' WebSocket is connect! ');
+        Log.Info(' WebSocket is open! ');
+        const time = this.retime;
+        this.resolveConnect = !1;
+        this.resolveConnectTime = time;
+        this.WSState = e.target.readyState;
+        this.open(e);
+      }
+
+      this.socket.onmessage = (evt) => {
+        // console.log('%O', evt)
+        const data = evt.data;
+        const options = {
+          body: data
+        };
+        this.queue.add( { data: data, response: evt } );
+        this.nfc.showNotification(options);
+        Log.Info(`WebSocket status '${evt.type}', New Message - ${data}`);
+      }
+
+      this.socket.onerror = (err) => {
+        Log.error(`WebSocket status '${err.type}' - ${err.reason}`);
+        // console.log('%O', err)
+        this.WSState = err.target.readyState;
+        this.rebuildSocket();
+        this.error( err );
+      }
+
+      this.socket.onclose = (evt) => {
+        Log.warn(`WebSocket status '${evt.type}' - ${evt.reason}`);
+        // console.log('%O', evt, this.socket)
+        this.WSState = evt.target.readyState;
+        this.rebuildSocket();
+        this.closed( evt );
+      }
+
+      this.queue = new Queue();
+      this.nfc = new Notification();
+      this.nfc.init(this.noticeOptions);
+    }
+    catch ( e ) {
+      Log.error( e );
+    }
+  }
+  /**
+   * @description 断线重连
+   * @return {[type]}
+   */
+  rebuildSocket(){
+    // this.destroy();
+    this.resolveConnect = !0;
+
+    let timer = null;
+
+    const FN = (num) => {
+      return new Promise( ( resolve, reject ) => {
+        timer = setTimeout( () => {
+          Log.Info( `WebSocket state ${this.WSState}, in ${num} connect WebSocket` );
+          this.initWSocket();
+          this.reConnect(num);
+          this.resolveConnect = !1;
+          resolve();
+        }, 5000);
+      });
+    };
+
+    this.resolveConnect && this.resolveConnectTime > 0 && FN(this.resolveConnectTime).then( () => { clearTimeout(timer); });
+
+    this.resolveConnectTime--;
+
+  }
+  /**
+   * [init description]
+   * @param  {Object} options [description]
+   * @return {[type]}         [description]
+   */
+  init( options = {} ){
+    if ( !('WebSocket' in window) ) {
+      return Log.warn(` Your Browser Dose Not Support WebSocket `);
+    }
+    if ( isEmptyObject(options) ) {
+      return Log.error(` WebSocket Can't Resolve Empty Options`);
+    }
+
+    const socket = options.socket;
+    
+    this.noticeOptions = options.notice;
+
+    if ( isObject( socket ) ) {
+      const T = socket.retime, temp_time = 0;
+      this.url = socket.url;
+      this.protocol = socket.protocol;
+      this.retime = isNumber(T) && T <= 5 ? T : 5;
+      temp_time = this.retime;
+      this.resolveConnectTime = temp_time;
+    }
+
+    isString( socket ) && (this.url = socket);
+
+    isEmptyObject(this.protocol) && Log.warn( `WebSocket protocol is empty` );
+
+    if ( isEmptyObject(this.url) ) {
+      return Log.error(` WebSocket'url is empty `);
+    }
+    
+    this.initWSocket();
   }
 }

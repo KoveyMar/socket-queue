@@ -14,6 +14,8 @@
 
 let response_msg = 0;
 
+let timer = null;
+
 const ws = require('ws');
 
 const WS_Server = new ws.Server( { port: 9000 } );
@@ -33,13 +35,15 @@ WS_Server.on('connection', function( ws ){
 	// ws.on('message', function( msg ){
 		// console.log(` SERVER SEND MESSAGE ---- [${MSG}] FROM ${WS_Server}`);
 
-		setInterval( () => {
+		timer = setInterval( () => {
 
 			response_msg++;
+			
+			response_msg > 5 && clearInterval(timer);
 
 			console.log(` BFFORE SERVER SEND MESSAGE FROM ${WS_Server}`);
 
-			ws.send( ` NODE response msg ${response_msg} ` , (err) => {
+			ws.send( ` node server response message is [${response_msg}] ` , (err) => {
 				console.error( `SERVER SEND MESSAGE IS ERROR ------- ${err}` );
 			});
 		}, 3*10e2);

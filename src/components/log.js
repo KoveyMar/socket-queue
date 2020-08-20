@@ -18,7 +18,7 @@ export default class Log {
 		console.warn( `Socket Warning - [ ${msg} ]` );
 	}
 
-	static alert( msg ) {
-		console.log( `Socket alert - [ ${msg} ]` );
+	static Info( msg ) {
+		console.log( `Socket Info - [ ${msg} ]` );
 	}
 }
