@@ -300,7 +300,7 @@
 		function _N( data ){
 			let str = `<ol class='nav-list'>`;
 			for (let j of data) {
-				str += `<li class='title'><a href='${j['id']}'>${j['title']}</a></li>`;
+				str += `<li class='title'><a href='#${j['id']}'>${j['title']}</a></li>`;
 			}
 			return `${str}</ol>`;
 		}
@@ -351,7 +351,7 @@
 		function _I( data ){
 			let str = '<ol>';
 			for ( let u of data ) {
-				str += `<li>
+				str += `<li id='${u['id']}'>
 				<h3>${u['title']}</h3>
 				<p class='main-desp'>${u['description']}</p>
 				${_T(u['table'])}
