@@ -23,3 +23,8 @@ export function isEmptyObject( obj ) {
 export function isNumber( number ) {
 	return !Number.isNaN( Number( number ) ) && typeof number === 'number';
 }
+
+export function getType( obj ) {
+	let _def_type = Object.prototype.toString.call( obj )
+	return _def_type.substring(8, _def_type.length - 1);
+}

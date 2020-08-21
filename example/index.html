@@ -2,9 +2,369 @@
 <html lang=en>
 <head>
 	<meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge">
-	<meta name=viewport content="width=device-width,initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		table {
+
+		}
+		main * {
+			box-sizing: border-box;
+		}
+		aside {
+			position: fixed;
+			height: 100%;
+			width: 220px;
+			left: 0;
+			padding: 20px 0 20px 50px;
+			box-shadow: 1px 0 5px 0 #999;
+		}
+		aside .nav-list {
+			list-style: decimal;
+		}
+		aside .title {
+			margin: 10px 0;
+		}
+		aside .title a {
+			text-decoration: underline;
+			color: #0366d6;
+			font-size: 18px;
+		}
+		article {
+			width: calc( 100% - 220px );
+			padding: 20px 40px;
+			float: right;
+		}
+		article .main-title {
+			font-size: 24px;
+		}
+		article section ol li {
+			margin: 20px 0;
+		}
+		article section ol li h3 {
+			font-weight: normal;
+			font-size: 22px;
+			color: #0366d6;
+		}
+		article section ol li .main-desp {
+			margin: 10px 0;
+			line-height: 27px;
+			font-size: 17px;
+			color: #666;
+		}
+		article section ol li .desp {
+			margin: 10px 0;
+			font-size: 16px;
+		}
+		article section table {
+			width:100%;
+			border-collapse:collapse;
+			border-spacing:1;
+			border-spacing:0;
+		}
+		article section table tr th {
+			background: #dfdfdf;
+		}
+		article section table tfoot tr td {
+			background: #b2b1b1;
+		}
+		article section table tr th, article section table tr td {
+			line-height: 30px;
+			border: 1px solid #666;
+			border-left: none;
+			padding-left: 10px;
+		}
+		article section table tr th:first-child, article section table tr td:first-child {
+			border-left: 1px solid #666;
+		}
+		article section pre {
+			padding: 16px;
+		    overflow: auto;
+		    font-size: 16px;
+		    line-height: 1.45;
+		    background-color: #f6f8fa;
+		    border-radius: 6px;
+    		font-family: inherit;
+		}
+		.op_show {
+			padding-left: 20px;
+    		list-style: upper-roman;
+		}
+		.op_show li .op_title b {
+			display: inline-block;
+			padding: 0 7px;
+			background: #dedede;
+		}
+		.op_show li .op_param {
+			margin: 5px 0;
+    		letter-spacing: 1px;
+		}
+		.op_show li .op_param i {
+			font-style: normal;
+    		color: #217dc4;
+		}
+		@media screen and (max-width: 768px) {
+			aside {
+				display: none;
+			}
+			.op_show {
+				padding: 0;
+			}
+			article {
+				width: 100%;
+				padding: 10px;
+				float: none;
+			}
+		}
+	</style>
 </head>
-<body>
-	<div id=app></div>
+<body>	
+	<main>
+		<aside id='nav-menu'></aside>
+		<article>
+			<div class="main-title">API</div>
+			<section id='container'></section>
+		</article>
+	</main>
+	<script>
+		let JDATA = {
+			version: '1.0.0',
+			mainText: [
+				{
+					title: '概述',
+					id: 'comments',
+					description : '本文档适用于 ws-msg-queue 组件的使用,该组件基于 <b>WebSocket</b> + <b>Notification</b> 的 <b>HTML5 API</b> 创建, 使用消息队列机制进行数据的获取。'
+				},
+				{
+					title: '基本使用',
+					id: 'import',
+					description: 
+						`<p style='margin:10px 0;'><pre>npm install ws-msg-queue </pre></p>
+						<p>
+						<pre>import $WSQueue from 'ws-msg-queue';
+
+						let ws_opstions = {
+							socket: {
+								url: 'ws://127.0.0.1/',
+								protocol: '',
+								retime: 5
+							},
+							notice: {
+								reverseText: false,
+								title: '新的消息通知',
+								autoClose: false,
+								options: {
+									dir: 'auto',
+									lang: 'zh-cn',
+									badge: '',
+									body: '',
+									tag: '',
+									icon: '',
+									image: '',
+									data: '',
+									vibrate: '',
+									renotify: false,
+									requireInteraction: false
+								}
+							}
+						};
+
+						const $WebSocket = new $WebSocket();</pre></p>`
+					
+				},
+				{
+					title: '实例方法',
+					id: 'object',
+					description : '实例对象提供的方法',
+					table: [
+						{
+							title: 'init',
+							description: `$WebSocket.init(ws_opstions)`,
+							param: [
+								{
+									name: 'optoins',
+									type: 'Object'
+								}
+							],
+							back: '无'
+						},
+						{
+							title: 'send',
+							description: `$WebSocket.send(ws_opstions, () => {})`,
+							param: [
+								{
+									name: 'message',
+									type: 'String'
+								},
+								{
+									name: 'callback',
+									type: 'Function'
+								}
+							],
+							back: '无'
+						},
+						{
+							title: 'getData',
+							description: `let msg = $WebSocket.getData();//msg 收到的WS消息`,
+							param: [],
+							back: 'WS获取的第一条数据'
+						}
+					]
+				},
+				{
+					title: 'options设置',
+					id: 'options',
+					description : '用于设置初始化options',
+					param: [
+						{
+							name: 'socket',
+							type: 'Object/String',
+							require: !0,
+							default_value: '',
+							explain: `可直接设置 socket: 'ws://127.0.0.1/',或者socket: {}`,
+							param: [
+								{
+									name: 'url',
+									type: 'String',
+									require: !0,
+									default_value: '',
+									explain: '要请求的WebSocket URL'
+								},
+								{
+									name: 'protocol',
+									type: 'String',
+									require: !1,
+									default_value: '',
+									explain: '用于指定子协议'
+								},
+								{
+									name: 'retime',
+									type: 'String/Number',
+									require: !1,
+									default_value: 5,
+									explain: '断线重连次数，最大5次'
+								}
+							]
+						},
+						{
+							name: 'notice',
+							type: 'Object',
+							require: !1,
+							default_value: '',
+							explain: '用于消息通知显示',
+							param: [
+								{
+									name: 'reverseText',
+									type: 'Boolean',
+									require: !1,
+									default_value: 'false',
+									explain: '是否翻转正文与标题的显示'
+								},								
+								{
+									name: 'title',
+									type: 'String',
+									require: !1,
+									default_value: '新的消息通知',
+									explain: '通知标题'
+								},								
+								{
+									name: 'autoClose',
+									type: 'Boolean',
+									require: !1,
+									default_value: 'false',
+									explain: '在通知显示后，是否自动关闭'
+								},
+								{
+									name: 'options',
+									type: 'Object',
+									require: !1,
+									default_value: '',
+									explain: `消息通知的配置项，基于HTML5 API标准,详情：<a href='https://developer.mozilla.org/zh-CN/docs/Web/API/notification/Notification' target='_blank'>Notification Optoins对象</a>`
+								},
+							]
+						}
+					]
+				},
+				{
+					title: '参考文献',
+					id: 'word',
+					description: ''
+				}
+			]
+		}
+	</script>
+	<script>
+		function _N( data ){
+			let str = `<ol class='nav-list'>`;
+			for (let j of data) {
+				str += `<li class='title'><a href='${j['id']}'>${j['title']}</a></li>`;
+			}
+			return `${str}</ol>`;
+		}
+		function _T( data ){
+			if ( data === void 0 ) return '';
+			const td = tb => {
+				if (tb.length === 0) return `<tr><td colspan='2' align='center'>暂无数据</td></tr>`;
+				let h = '';
+				for (let d of tb) {
+					h += `<tr><td>${d['name']}</td><td>${d['type']}</td></tr>`;
+				}
+				return `${h}`;
+			};
+			let str = '';
+			for (let i of data) {
+				str += `<p class='desp'>方法名称: <b>${i['title']}</b></p>
+						<p class='desp'>方法调用: <i>${i['description']}</i></p>
+						<table>
+						<col width='50%'/>
+						<col width='50%'/>
+					<thead>
+						<tr>
+							<th>名称</th>
+							<th>类型</th>
+						</tr>
+					</thead><tbody>${td(i['param'])}</tbody>
+					<tfoot>
+						<tr><td colspan='2'>返回值: ${i['back']}</td></tr>
+					</tfoot>
+					</table>`;
+			}
+			return `${str}`;
+		}
+		function _P( data , child = null){
+			if ( data === void 0 ) return '';
+			let str = `<ol class='op_show'>`;
+			for (let j of data){
+				str += `<li>
+					<p class='op_title'><b>${child ? child + '.' +j['name'] : j['name']}</b></p>
+					<p class='op_param'>可选类型: <i>${j['type']}</i></p>
+					<p class='op_param'>是否必选: <i>${j['require'] ? '必选' : '可选'}</i></p>
+					<p class='op_param'>默认值: <i>${j['default_value']}</i></p>
+					<p class='op_param'>说明: <i>${j['explain']}</i></p>
+					<ol class='se_op_show'>${_P(j['param'], j['name'])}</ol></li>`;
+			}
+			return `${str}</ol>`;
+		}
+		function _I( data ){
+			let str = '<ol>';
+			for ( let u of data ) {
+				str += `<li>
+				<h3>${u['title']}</h3>
+				<p class='main-desp'>${u['description']}</p>
+				${_T(u['table'])}
+				${_P(u['param'])}
+				</li>`;
+			}
+			return `${str}</ol>`;
+		}
+	</script>
+	<script>
+		document.querySelector('#nav-menu').innerHTML = _N(JDATA.mainText);
+
+		document.querySelector('#container').innerHTML = _I(JDATA.mainText);
+	</script>
 </body>
 </html>

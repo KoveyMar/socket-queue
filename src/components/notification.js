@@ -32,6 +32,7 @@ export default class notification {
 			requireInteraction: !1
 		};
 		this.autoClose = !0;
+		this.reverseText = !1;
     	this.done = this.done.bind(this);
     	this.fail = this.fail.bind(this);
     	this.show = this.show.bind(this);
@@ -124,17 +125,18 @@ export default class notification {
 	 */
 	init(notice){
 		if ( !("Notification" in window) ) {
-			return Log.warn( `Your Browser Does Not Support Desktop Notification` );
+			return Log.Warn( `Your Browser Does Not Support Desktop Notification` );
 		}
 
-		isEmptyObject(notice) && Log.warn( `Notification Resovle Default Options` );
+		isEmptyObject(notice) && Log.Warn( `Notification Resovle Default Options` );
 
 		if ( isObject(notice) ) {
-			Log.warn(`Notification Resovle Options`);
+			Log.Warn(`Notification Resovle Options`);
 			this.noticeOptions = notice;
 			this.title = notice.title || '新的socket消息';
 			this.options = notice.options || this.options;
 			this.autoClose = !isEmptyObject(notice.autoClose) ? notice.autoClose : !0;
+			this.reverseText = notice.reverseText;
 			this.done = notice.done || new Function();
 			this.fail = notice.fail || new Function();
 			this.close = notice.OnClose || new Function();
@@ -158,7 +160,7 @@ export default class notification {
 		else if ( Notification.permission === 'denied' || Notification.permission === 'default' ) {
 			Notification.requestPermission()
 			.then( res => {
-				Log.warn(`Notification Has Been Allowed Work`);
+				Log.Warn(`Notification Has Been Allowed Work`);
 				if ( res === 'granted' ) {
 					this.ntf = new Notification( this.title, _options );
 					this.done();
@@ -167,7 +169,7 @@ export default class notification {
 
 			})
 			.catch( err => {
-				Log.warn( `Notification Could Not Resovle` );
+				Log.Warn( `Notification Could Not Resovle` );
 				this.fail();
 			});
 		}

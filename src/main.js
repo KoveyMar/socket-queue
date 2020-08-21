@@ -7,7 +7,7 @@
 import Queue from './components/queue';
 import Notification from './components/notification';
 import Log from './components/log';
-import { isObject, isString, isEmptyObject, isNumber } from './components/utils';
+import { isObject, isString, isEmptyObject, isNumber, getType } from './components/utils';
 export class socketQueue {
 
   constructor(){
@@ -131,7 +131,7 @@ export class socketQueue {
       }
 
       this.socket.onerror = (err) => {
-        Log.error(`WebSocket status '${err.type}' - ${err.reason}`);
+        Log.Error(`WebSocket status '${err.type}' - ${err.reason}`);
         // console.log('%O', err)
         this.WSState = err.target.readyState;
         this.rebuildSocket(err.type);
@@ -139,7 +139,7 @@ export class socketQueue {
       }
 
       this.socket.onclose = (evt) => {
-        Log.warn(`WebSocket status '${evt.type}' - ${evt.reason}`);
+        Log.Warn(`WebSocket status '${evt.type}' - ${evt.reason}`);
         // console.log('%O', evt)
         this.WSState = evt.target.readyState;
         this.rebuildSocket(evt.type);
@@ -151,7 +151,7 @@ export class socketQueue {
       this.nfc.init(this.noticeOptions);
     }
     catch ( e ) {
-      Log.error( e );
+      Log.Error( e );
     }
   }
   /**
@@ -189,10 +189,10 @@ export class socketQueue {
    */
   init( options = {} ){
     if ( !('WebSocket' in window) ) {
-      return Log.warn(` Your Browser Dose Not Support WebSocket `);
+      return Log.Warn(` Your Browser Dose Not Support WebSocket `);
     }
     if ( isEmptyObject(options) ) {
-      return Log.error(` WebSocket Can't Resolve Empty Options`);
+      return Log.Error(` WebSocket Can't Resolve Empty Options`);
     }
 
     const socket = options.socket;
@@ -210,10 +210,10 @@ export class socketQueue {
 
     isString( socket ) && (this.url = socket);
 
-    isEmptyObject(this.protocol) && Log.warn( `WebSocket protocol is empty` );
+    !isString(this.protocol) && Log.Error( `TypeError: WebSocket protocol can't resolve, protocol must be string, but got ${typeof getType(this.protocol)}` );
 
     if ( isEmptyObject(this.url) ) {
-      return Log.error(` WebSocket'url is empty `);
+      return Log.Error(` WebSocket'url is empty `);
     }
     
     this.initWSocket();

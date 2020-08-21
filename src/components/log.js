@@ -10,11 +10,11 @@ export default class Log {
 		this.debug = !1;
 	}
 
-	static error( msg ){
+	static Error( msg ){
 		console.error( `Socket Error - [ ${msg} ]` );
 	}
 
-	static warn( msg ){
+	static Warn( msg ){
 		console.warn( `Socket Warning - [ ${msg} ]` );
 	}
 
