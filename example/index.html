@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang=en>
 <head>
+	<title>API 文档</title>
 	<meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<style>
@@ -8,8 +9,8 @@
 			margin: 0;
 			padding: 0;
 		}
-		table {
-
+		body {
+			color: #333;
 		}
 		main * {
 			box-sizing: border-box;
@@ -26,7 +27,7 @@
 			list-style: decimal;
 		}
 		aside .title {
-			margin: 10px 0;
+			margin: 18px 0;
 		}
 		aside .title a {
 			text-decoration: underline;
@@ -59,6 +60,9 @@
 			margin: 10px 0;
 			font-size: 16px;
 		}
+		article section ol li .desp span {
+			color: #666;
+		}
 		article section table {
 			width:100%;
 			border-collapse:collapse;
@@ -89,9 +93,11 @@
 		    border-radius: 6px;
     		font-family: inherit;
 		}
-		.op_show {
-			padding-left: 20px;
+		.main-list {
     		list-style: upper-roman;
+		}
+		.op_show, .type-list {
+			padding-left: 20px;
 		}
 		.op_show li .op_title b {
 			display: inline-block;
@@ -106,16 +112,19 @@
 			font-style: normal;
     		color: #217dc4;
 		}
+		.type-list li {
+			margin: 10px 0;
+		}
+		.type-list li a {
+			color: #217dc4;
+		}
 		@media screen and (max-width: 768px) {
 			aside {
 				display: none;
 			}
-			.op_show {
-				padding: 0;
-			}
 			article {
 				width: 100%;
-				padding: 10px;
+				padding: 10px 10px 10px 40px;
 				float: none;
 			}
 		}
@@ -172,7 +181,7 @@
 							}
 						};
 
-						const $WebSocket = new $WebSocket();</pre></p>`
+						const $WebSocket = new $WSQueue();</pre></p>`
 					
 				},
 				{
@@ -181,8 +190,8 @@
 					description : '实例对象提供的方法',
 					table: [
 						{
-							title: 'init',
-							description: `$WebSocket.init(ws_opstions)`,
+							title: 'init 初始化实例',
+							description: `$WebSocket.init(optoins)`,
 							param: [
 								{
 									name: 'optoins',
@@ -192,12 +201,12 @@
 							back: '无'
 						},
 						{
-							title: 'send',
-							description: `$WebSocket.send(ws_opstions, () => {})`,
+							title: 'send 发送数据',
+							description: `$WebSocket.send(message, callback)`,
 							param: [
 								{
 									name: 'message',
-									type: 'String'
+									type: 'Any'
 								},
 								{
 									name: 'callback',
@@ -207,10 +216,16 @@
 							back: '无'
 						},
 						{
-							title: 'getData',
-							description: `let msg = $WebSocket.getData();//msg 收到的WS消息`,
+							title: 'getData 获取ws数据',
+							description: `$WebSocket.getData();`,
 							param: [],
-							back: 'WS获取的第一条数据'
+							back: 'data 通过WS获取的第一条数据'
+						},
+						{
+							title: 'destroy 销毁当前调用实例',
+							description: `$WebSocket.destroy();`,
+							param: [],
+							back: '无'
 						}
 					]
 				},
@@ -289,10 +304,19 @@
 					]
 				},
 				{
+					title: '历史版本',
+					id: 'version',
+					description: ['1.0.0', '1.1.0']
+				},
+				{
 					title: '参考文献',
 					id: 'word',
-					description: ''
-				}
+					description: [
+					"<a href='https://developer.mozilla.org/zh-CN/docs/Web/API/Notification'>https://developer.mozilla.org/zh-CN/docs/Web/API/Notification</a>",
+					"<a href='https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket'>https://developer.mozilla.org/zh-CN/docs/Web/API/WebSocket</a>",
+					"<a href='https://www.ruanyifeng.com/blog/2017/05/websocket.html'>https://www.ruanyifeng.com/blog/2017/05/websocket.html</a>"
+					]
+				},
 			]
 		}
 	</script>
@@ -307,7 +331,7 @@
 		function _T( data ){
 			if ( data === void 0 ) return '';
 			const td = tb => {
-				if (tb.length === 0) return `<tr><td colspan='2' align='center'>暂无数据</td></tr>`;
+				if (tb.length === 0) return `<tr><td colspan='2' align='center'>暂无</td></tr>`;
 				let h = '';
 				for (let d of tb) {
 					h += `<tr><td>${d['name']}</td><td>${d['type']}</td></tr>`;
@@ -317,7 +341,7 @@
 			let str = '';
 			for (let i of data) {
 				str += `<p class='desp'>方法名称: <b>${i['title']}</b></p>
-						<p class='desp'>方法调用: <i>${i['description']}</i></p>
+						<p class='desp'>方法调用: <span>${i['description']}</span></p>
 						<table>
 						<col width='50%'/>
 						<col width='50%'/>
@@ -348,12 +372,22 @@
 			}
 			return `${str}</ol>`;
 		}
+		function _L(data) {
+			const fc = str => {
+				let b = `<ol class='type-list'>`;
+				for (let j of str) {
+					b += `<li class='list-item'>${j}</li>`;
+				}
+				return `${b}</ol>`;
+			};
+			return Array.isArray( data ) ? fc(data) : `<p class='main-desp'>${data}</p>`;
+		}
 		function _I( data ){
-			let str = '<ol>';
+			let str = `<ol class='main-list'>`;
 			for ( let u of data ) {
 				str += `<li id='${u['id']}'>
 				<h3>${u['title']}</h3>
-				<p class='main-desp'>${u['description']}</p>
+				${_L(u['description'])}
 				${_T(u['table'])}
 				${_P(u['param'])}
 				</li>`;

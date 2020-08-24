@@ -7,7 +7,7 @@
 import Queue from './components/queue';
 import Notification from './components/notification';
 import Log from './components/log';
-import { isObject, isString, isEmptyObject, isNumber, getType } from './components/utils';
+import { isObject, isString, isEmptyObject, isNumber, getType, isFun } from './components/utils';
 export class socketQueue {
 
   constructor(){
@@ -21,9 +21,7 @@ export class socketQueue {
     this.noticeOptions = null;
     this.resolveConnect = !1;
     this.resolveConnectTime = 5;
-    // this.beforeOpen = this.beforeOpen.bind(this);
     this.open = this.open.bind(this);
-    // this.beforeClosed = this.beforeClosed.bind(this);
     this.closed = this.closed.bind(this);
     this.error = this.error.bind(this);
     this.send = this.send.bind(this);
@@ -34,20 +32,10 @@ export class socketQueue {
     this.rebuildSocket = this.rebuildSocket.bind(this);
   }
   /**
-   * @description 建立WS连接前
-   * @return {[type]}
-   */
-  // beforeOpen(){}
-  /**
    * @description 建立WS连接后
    * @return {[type]}
    */
   open(){}
-  /**
-   * @description 连接关闭前
-   * @return {[type]}
-   */
-  // beforeClosed(){}
   /**
    * @description 连接关闭后
    * @return {[type]}
@@ -206,6 +194,9 @@ export class socketQueue {
       this.retime = isNumber(T) && T <= 5 ? T : 5;
       temp_time = this.retime;
       this.resolveConnectTime = temp_time;
+      this.open = isFun(socket.open) ? socket.open : new Function();
+      this.closed = isFun(socket.closed) ? socket.closed : new Function();
+      this.error = isFun(socket.error) ? socket.error : new Function();
     }
 
     isString( socket ) && (this.url = socket);

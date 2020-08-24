@@ -5,7 +5,7 @@
  * 
  */
 import Log from './log';
-import { isObject, isEmptyObject } from './utils';
+import { isObject, isEmptyObject, isFun } from './utils';
 export default class notification {
 	/**
 	 * [constructor description]
@@ -137,12 +137,12 @@ export default class notification {
 			this.options = notice.options || this.options;
 			this.autoClose = !isEmptyObject(notice.autoClose) ? notice.autoClose : !0;
 			this.reverseText = notice.reverseText;
-			this.done = notice.done || new Function();
-			this.fail = notice.fail || new Function();
-			this.close = notice.OnClose || new Function();
-			this.show = notice.OnShow || new Function();
-			this.click = notice.OnClick || new Function();
-			this.error = notice.OnError || new Function();
+			this.done = isFun(notice.done) ? notice.done : new Function();
+			this.fail = isFun(notice.fail) ? notice.fail : new Function();
+			this.close = isFun(notice.OnClose) ? notice.OnClose : new Function();
+			this.show = isFun(notice.OnShow) ? notice.OnShow : new Function();
+			this.click = isFun(notice.OnClick) ? notice.OnClick : new Function();
+			this.error = isFun(notice.OnError) ? notice.OnError : new Function();
 		}
 		(Notification.permission === 'denied' || Notification.permission === 'default') && Notification.requestPermission();
 	}

@@ -25,6 +25,6 @@ export function isNumber( number ) {
 }
 
 export function getType( obj ) {
-	let _def_type = Object.prototype.toString.call( obj )
+	let _def_type = Object.prototype.toString.call( obj );
 	return _def_type.substring(8, _def_type.length - 1);
 }
