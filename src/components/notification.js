@@ -5,7 +5,7 @@
  * 
  */
 import Log from './log';
-import { isObject, isEmptyObject, isFun } from './utils';
+import Utils from './utils';
 export default class notification {
 	/**
 	 * [constructor description]
@@ -128,21 +128,21 @@ export default class notification {
 			return Log.Warn( `Your Browser Does Not Support Desktop Notification` );
 		}
 
-		isEmptyObject(notice) && Log.Warn( `Notification Resovle Default Options` );
+		Utils.isEmptyObject(notice) && Log.Warn( `Notification Resovle Default Options` );
 
-		if ( isObject(notice) ) {
+		if ( Utils.isObject(notice) ) {
 			Log.Warn(`Notification Resovle Options`);
 			this.noticeOptions = notice;
 			this.title = notice.title || '新的socket消息';
 			this.options = notice.options || this.options;
-			this.autoClose = !isEmptyObject(notice.autoClose) ? notice.autoClose : !0;
-			this.reverseText = notice.reverseText;
-			this.done = isFun(notice.done) ? notice.done : new Function();
-			this.fail = isFun(notice.fail) ? notice.fail : new Function();
-			this.close = isFun(notice.OnClose) ? notice.OnClose : new Function();
-			this.show = isFun(notice.OnShow) ? notice.OnShow : new Function();
-			this.click = isFun(notice.OnClick) ? notice.OnClick : new Function();
-			this.error = isFun(notice.OnError) ? notice.OnError : new Function();
+			this.autoClose = !Utils.isEmptyObject(notice.autoClose) ? notice.autoClose : !0;
+			this.reverseText = Utils.isEmptyObject(notice.reverseText) ? !1 : notice.reverseText;
+			this.done = Utils.isFunction(notice.done) ? notice.done : new Function();
+			this.fail = Utils.isFunction(notice.fail) ? notice.fail : new Function();
+			this.close = Utils.isFunction(notice.OnClose) ? notice.OnClose : new Function();
+			this.show = Utils.isFunction(notice.OnShow) ? notice.OnShow : new Function();
+			this.click = Utils.isFunction(notice.OnClick) ? notice.OnClick : new Function();
+			this.error = Utils.isFunction(notice.OnError) ? notice.OnError : new Function();
 		}
 		(Notification.permission === 'denied' || Notification.permission === 'default') && Notification.requestPermission();
 	}
@@ -152,8 +152,16 @@ export default class notification {
 			...this.options,
 			...options
 		};
+		let temp_body = _options.body, temp_title = this.title;
+
+		this.reverseText && 
+		(
+			_options.body = temp_title, 
+			temp_title = temp_body
+		);
+
 		if ( Notification.permission === 'granted' ) {
-			this.ntf = new Notification( this.title, _options );
+			this.ntf = new Notification( temp_title, _options );
 			this.done();
 			this.stateDispatch();
 		}
@@ -162,7 +170,7 @@ export default class notification {
 			.then( res => {
 				Log.Warn(`Notification Has Been Allowed Work`);
 				if ( res === 'granted' ) {
-					this.ntf = new Notification( this.title, _options );
+					this.ntf = new Notification( temp_title, _options );
 					this.done();
 					this.stateDispatch();			
 				}

@@ -4,27 +4,55 @@
  *	@description Utils
  * 
  */
-export function isObject( obj ) {
-	return Object.prototype.toString.call( obj ) === "[object Object]";
+import Log from './log';
+function getProto( obj ){
+	return Object.prototype.toString.call( obj );
 }
 
-export function isFun( fn ) {
-	return Object.prototype.toString.call( fn ) === "[object Function]";
+function getType( obj) {
+	let _def_type = getProto( obj );
+	return _def_type.substring(8, _def_type.length - 1);
 }
 
-export function isString( str ) {
+function throwType(obj, objName, fun = { fn: callback } ){	
+	let obj_type = Object.keys(fun)[0],
+		proto_type = getType(obj);
+	try {
+		if (!Object.values(fun)[0](obj)) {
+			throw `TypeError: type can't resolve, '${objName}' must be ${obj_type}, but got ${proto_type}`;
+		}
+	}
+	catch ( err ) {
+		Log.Error( err );
+	}
+}
+
+function isObject( obj ) {
+	return getProto( obj ) === "[object Object]";
+}
+
+function isFunction( fn ) {
+	return getProto( fn ) === "[object Function]";
+}
+
+function isString( str ) {
 	return typeof str === 'string';
 }
 
-export function isEmptyObject( obj ) {
+function isEmptyObject( obj ) {
 	return obj === null || (obj === void 0 && typeof obj === 'undefined');
 }
 
-export function isNumber( number ) {
+function isNumber( number ) {
 	return !Number.isNaN( Number( number ) ) && typeof number === 'number';
 }
 
-export function getType( obj ) {
-	let _def_type = Object.prototype.toString.call( obj );
-	return _def_type.substring(8, _def_type.length - 1);
+export default {
+	getType: getType,
+	throwType: throwType,
+	isObject: isObject,
+	isFunction: isFunction,
+	isString: isString,
+	isEmptyObject: isEmptyObject,
+	isNumber: isNumber
 }

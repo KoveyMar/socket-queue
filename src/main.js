@@ -7,7 +7,7 @@
 import Queue from './components/queue';
 import Notification from './components/notification';
 import Log from './components/log';
-import { isObject, isString, isEmptyObject, isNumber, getType, isFun } from './components/utils';
+import Utils from './components/utils';
 export class socketQueue {
 
   constructor(){
@@ -94,11 +94,11 @@ export class socketQueue {
   initWSocket(){
     try {
       this.socket = new WebSocket( this.url, this.protocol );
-      Log.Info(' WebSocket is created ');
+      Log.Info('WebSocket is created');
 
       this.socket.onopen = (e) => {
-        Log.Info(' WebSocket is connect! ');
-        Log.Info(' WebSocket is open! ');
+        Log.Info('WebSocket is connect!');
+        Log.Info('WebSocket is open!');
         const time = this.retime;
         this.resolveConnect = !1;
         this.resolveConnectTime = time;
@@ -155,6 +155,7 @@ export class socketQueue {
 
     const FN = (num) => {
       return new Promise( ( resolve, reject ) => {
+        Log.Info(`WebSocket trying to reconnect...`);
         timer = setTimeout( () => {
           Log.Info( `WebSocket reconnect from ${service}, state ${this.WSState}, in ${num} connect WebSocket` );
           this.initWSocket();
@@ -177,34 +178,35 @@ export class socketQueue {
    */
   init( options = {} ){
     if ( !('WebSocket' in window) ) {
-      return Log.Warn(` Your Browser Dose Not Support WebSocket `);
+      return Log.Warn(`Your Browser Dose Not Support WebSocket`);
     }
-    if ( isEmptyObject(options) ) {
-      return Log.Error(` WebSocket Can't Resolve Empty Options`);
+    if ( Utils.isEmptyObject(options) ) {
+      return Log.Error(`WebSocket Can't Resolve Empty Options`);
     }
 
     const socket = options.socket;
     
     this.noticeOptions = options.notice;
 
-    if ( isObject( socket ) ) {
-      const T = socket.retime, temp_time = 0;
+    if ( Utils.isObject( socket ) ) {
+      const T = socket.retime;
+      let temp_time = 0;
       this.url = socket.url;
       this.protocol = socket.protocol;
-      this.retime = isNumber(T) && T <= 5 ? T : 5;
+      this.retime = Utils.isNumber(T) && T <= 5 ? T : 5;
       temp_time = this.retime;
       this.resolveConnectTime = temp_time;
-      this.open = isFun(socket.open) ? socket.open : new Function();
-      this.closed = isFun(socket.closed) ? socket.closed : new Function();
-      this.error = isFun(socket.error) ? socket.error : new Function();
+      this.open = Utils.isFunction(socket.open) ? socket.open : new Function();
+      this.closed = Utils.isFunction(socket.closed) ? socket.closed : new Function();
+      this.error = Utils.isFunction(socket.error) ? socket.error : new Function();
     }
 
-    isString( socket ) && (this.url = socket);
+    Utils.isString( socket ) && (this.url = socket);
 
-    !isString(this.protocol) && Log.Error( `TypeError: WebSocket protocol can't resolve, protocol must be string, but got ${typeof getType(this.protocol)}` );
+    !Utils.isString(this.protocol) && !Utils.isEmptyObject(this.protocol) && Utils.throwType(this.protocol, 'protocol', { string: Utils.isString });
 
-    if ( isEmptyObject(this.url) ) {
-      return Log.Error(` WebSocket'url is empty `);
+    if ( Utils.isEmptyObject(this.url) ) {
+      return Log.Error(`WebSocket'url is empty`);
     }
     
     this.initWSocket();

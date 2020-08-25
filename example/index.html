@@ -261,7 +261,28 @@
 									require: !1,
 									default_value: 5,
 									explain: '断线重连次数，最大5次'
-								}
+								},
+								{
+									name: 'open',
+									type: 'Function',
+									require: !1,
+									default_value: null,
+									explain: 'callback WS连接成功后的回调'
+								},
+								{
+									name: 'closed',
+									type: 'Function',
+									require: !1,
+									default_value: null,
+									explain: 'callback WS关闭后的回调'
+								},
+								{
+									name: 'error',
+									type: 'Function',
+									require: !1,
+									default_value: null,
+									explain: 'callback WS发生错误时的回调'
+								},
 							]
 						},
 						{
@@ -276,7 +297,7 @@
 									type: 'Boolean',
 									require: !1,
 									default_value: 'false',
-									explain: '是否翻转正文与标题的显示'
+									explain: '是否翻转显示正文与标题'
 								},								
 								{
 									name: 'title',
