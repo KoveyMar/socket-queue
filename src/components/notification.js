@@ -107,7 +107,7 @@ export default class notification {
 			this.show();
 			this.autoClose && setTimeout( () => {
 				this.ntf.close();
-			}, 4000);
+			}, 3000);
 		}
 	}
 	/**
@@ -162,7 +162,7 @@ export default class notification {
 
 		if ( Notification.permission === 'granted' ) {
 			this.ntf = new Notification( temp_title, _options );
-			this.done();
+			this.done( this.ntf );
 			this.stateDispatch();
 		}
 		else if ( Notification.permission === 'denied' || Notification.permission === 'default' ) {
@@ -171,14 +171,14 @@ export default class notification {
 				Log.Warn(`Notification Has Been Allowed Work`);
 				if ( res === 'granted' ) {
 					this.ntf = new Notification( temp_title, _options );
-					this.done();
+					this.done( this.ntf );
 					this.stateDispatch();			
 				}
 
 			})
 			.catch( err => {
 				Log.Warn( `Notification Could Not Resovle` );
-				this.fail();
+				this.fail( err );
 			});
 		}
 	}

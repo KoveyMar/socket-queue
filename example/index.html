@@ -238,21 +238,18 @@
 							name: 'socket',
 							type: 'Object/String',
 							require: !0,
-							default_value: '',
 							explain: `可直接设置 socket: 'ws://127.0.0.1/',或者socket: {}`,
 							param: [
 								{
 									name: 'url',
 									type: 'String',
 									require: !0,
-									default_value: '',
 									explain: '要请求的WebSocket URL'
 								},
 								{
 									name: 'protocol',
 									type: 'String',
 									require: !1,
-									default_value: '',
 									explain: '用于指定子协议'
 								},
 								{
@@ -266,22 +263,31 @@
 									name: 'open',
 									type: 'Function',
 									require: !1,
-									default_value: null,
 									explain: 'callback WS连接成功后的回调'
 								},
 								{
 									name: 'closed',
 									type: 'Function',
 									require: !1,
-									default_value: null,
 									explain: 'callback WS关闭后的回调'
 								},
 								{
 									name: 'error',
 									type: 'Function',
 									require: !1,
-									default_value: null,
 									explain: 'callback WS发生错误时的回调'
+								},
+								{
+									name: 'reConnect',
+									type: 'Function',
+									require: !1,
+									explain: 'callback WS重连时的回调'
+								},
+								{
+									name: 'destroy',
+									type: 'Function',
+									require: !1,
+									explain: 'callback WS重连时的回调'
 								},
 							]
 						},
@@ -289,7 +295,6 @@
 							name: 'notice',
 							type: 'Object',
 							require: !1,
-							default_value: '',
 							explain: '用于消息通知显示',
 							param: [
 								{
@@ -317,8 +322,44 @@
 									name: 'options',
 									type: 'Object',
 									require: !1,
-									default_value: '',
+									default_value: '{}',
 									explain: `消息通知的配置项，基于HTML5 API标准,详情：<a href='https://developer.mozilla.org/zh-CN/docs/Web/API/notification/Notification' target='_blank'>Notification Optoins对象</a>`
+								},
+								{
+									name: 'done',
+									type: 'Function',
+									require: !1,
+									explain: 'callback 发送通知成功的回调'
+								},
+								{
+									name: 'fail',
+									type: 'Function',
+									require: !1,
+									explain: 'callback 发送通知失败的回调'
+								},
+								{
+									name: 'close',
+									type: 'Function',
+									require: !1,
+									explain: 'callback 关闭通知窗口的回调'
+								},
+								{
+									name: 'click',
+									type: 'Function',
+									require: !1,
+									explain: 'callback 点击通知窗口的回调'
+								},
+								{
+									name: 'error',
+									type: 'Function',
+									require: !1,
+									explain: 'callback 通知窗口发生错误的回调'
+								},
+								{
+									name: 'show',
+									type: 'Function',
+									require: !1,
+									explain: 'callback 通知窗口显示的回调'
 								},
 							]
 						}
@@ -381,13 +422,14 @@
 		}
 		function _P( data , child = null){
 			if ( data === void 0 ) return '';
+			const df = value => value !== void 0 ? `<p class='op_param'>默认值: <i>${value}</i></p>` : '';
 			let str = `<ol class='op_show'>`;
 			for (let j of data){
 				str += `<li>
 					<p class='op_title'><b>${child ? child + '.' +j['name'] : j['name']}</b></p>
-					<p class='op_param'>可选类型: <i>${j['type']}</i></p>
+					<p class='op_param'>类型: <i>${j['type']}</i></p>
 					<p class='op_param'>是否必选: <i>${j['require'] ? '必选' : '可选'}</i></p>
-					<p class='op_param'>默认值: <i>${j['default_value']}</i></p>
+					${df(j['default_value'])}
 					<p class='op_param'>说明: <i>${j['explain']}</i></p>
 					<ol class='se_op_show'>${_P(j['param'], j['name'])}</ol></li>`;
 			}
