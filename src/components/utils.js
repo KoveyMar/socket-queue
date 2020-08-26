@@ -18,7 +18,7 @@ function throwType(obj, objName, fun = { fn: callback } ){
 	let obj_type = Object.keys(fun)[0],
 		proto_type = getType(obj);
 	try {
-		if (!Object.values(fun)[0](obj)) {
+		if (!Object.values(fun)[0](obj) && !isEmptyObject(obj)) {
 			throw `TypeError: type can't resolve, '${objName}' must be ${obj_type}, but got ${proto_type}`;
 		}
 	}

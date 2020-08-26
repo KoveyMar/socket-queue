@@ -203,7 +203,7 @@ export class socketQueue {
 
     Utils.isString( socket ) && (this.url = socket);
 
-    !Utils.isString(this.protocol) && !Utils.isEmptyObject(this.protocol) && Utils.throwType(this.protocol, 'protocol', { string: Utils.isString });
+    !Utils.isString(this.protocol) && Utils.throwType(this.protocol, 'protocol', { string: Utils.isString });
 
     if ( Utils.isEmptyObject(this.url) ) {
       return Log.Error(`WebSocket'url is empty`);
