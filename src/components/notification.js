@@ -133,7 +133,7 @@ export default class notification {
 		if ( Utils.isObject(notice) ) {
 			Log.Warn(`Notification Resovle Options`);
 			this.noticeOptions = notice;
-			this.title = notice.title || '新的socket消息';
+			this.title = notice.title || this.title;
 			this.options = notice.options || this.options;
 			this.autoClose = !Utils.isEmptyObject(notice.autoClose) ? notice.autoClose : !0;
 			this.reverseText = Utils.isEmptyObject(notice.reverseText) ? !1 : notice.reverseText;
@@ -172,7 +172,7 @@ export default class notification {
 				if ( res === 'granted' ) {
 					this.ntf = new Notification( temp_title, _options );
 					this.done( this.ntf );
-					this.stateDispatch();			
+					this.stateDispatch();
 				}
 
 			})
