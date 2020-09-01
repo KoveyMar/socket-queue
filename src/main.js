@@ -8,7 +8,7 @@ import Queue from './components/queue';
 import Notification from './components/notification';
 import Log from './components/log';
 import Utils from './components/utils';
-export class socketQueue {
+export default class SocketQueue {
 
   constructor(){
     this.socket = null;

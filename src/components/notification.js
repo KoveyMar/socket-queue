@@ -6,7 +6,7 @@
  */
 import Log from './log';
 import Utils from './utils';
-export default class notification {
+export default class Notify {
 	/**
 	 * [constructor description]
 	 * @attribute [noticeOptions] 	实例对象接收配置
