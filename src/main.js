@@ -5,7 +5,7 @@
  * 
  */
 import Queue from './components/queue';
-import Notification from './components/notification';
+import Notify from './components/notification';
 import Log from './components/log';
 import Utils from './components/utils';
 export default class SocketQueue {
@@ -135,7 +135,7 @@ export default class SocketQueue {
       }
 
       this.queue = new Queue();
-      this.nfc = new Notification();
+      this.nfc = new Notify();
       this.nfc.init(this.noticeOptions);
     }
     catch ( e ) {
