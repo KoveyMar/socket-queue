@@ -235,8 +235,13 @@
 					description : '用于设置初始化options',
 					param: [
 						{
+							name: 'isLog',
+							type: 'Boolean',
+							explain: '是否开启浏览器 socket 日志'
+						},
+						{
 							name: 'socket',
-							type: 'Object/String',
+							type: 'Object|String',
 							require: !0,
 							explain: `可直接设置 socket: 'ws://127.0.0.1/',或者socket: {}`,
 							param: [
@@ -254,7 +259,7 @@
 								},
 								{
 									name: 'retime',
-									type: 'String/Number',
+									type: 'String|Number',
 									require: !1,
 									default_value: 5,
 									explain: '断线重连次数，最大5次'
@@ -368,7 +373,7 @@
 				{
 					title: '历史版本',
 					id: 'version',
-					description: ['1.0.0', '1.1.0', '1.1.2']
+					description: ['1.0.0', '1.1.0', '1.1.2', '1.1.5']
 				},
 				{
 					title: '参考文献',
@@ -428,7 +433,7 @@
 				str += `<li>
 					<p class='op_title'><b>${child ? child + '.' +j['name'] : j['name']}</b></p>
 					<p class='op_param'>类型: <i>${j['type']}</i></p>
-					<p class='op_param'>是否必选: <i>${j['require'] ? '必选' : '可选'}</i></p>
+					<p class='op_param'>是否必选: <i>${!!j['require'] ? '必选' : '可选'}</i></p>
 					${df(j['default_value'])}
 					<p class='op_param'>说明: <i>${j['explain']}</i></p>
 					<ol class='se_op_show'>${_P(j['param'], j['name'])}</ol></li>`;

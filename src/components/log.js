@@ -7,18 +7,27 @@
 export default class Log {
 	constructor(){
 		this.msg = null;
-		this.debug = !1;
+	}
+
+	static isLog = !0;
+
+	set isLog(value) {
+		this.isLog = value;
+	}
+
+	get isLog() {
+		return this.isLog;
 	}
 
 	static Error( msg ){
-		console.error( `Socket Error - [ ${msg} ]` );
+		this.isLog && console.error( `Socket Error - [ ${msg} ]` );
 	}
 
 	static Warn( msg ){
-		console.warn( `Socket Warning - [ ${msg} ]` );
+		this.isLog && console.warn( `Socket Warning - [ ${msg} ]` );
 	}
 
 	static Info( msg ) {
-		console.log( `Socket Info - [ ${msg} ]` );
+		this.isLog && console.log( `Socket Info - [ ${msg} ]` );
 	}
 }

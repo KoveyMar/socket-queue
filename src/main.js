@@ -21,6 +21,7 @@ export default class SocketQueue {
     this.noticeOptions = null;
     this.resolveConnect = !1;
     this.resolveConnectTime = 5;
+    this.isLog = !0;
     this.open = this.open.bind(this);
     this.closed = this.closed.bind(this);
     this.error = this.error.bind(this);
@@ -86,6 +87,7 @@ export default class SocketQueue {
     this.noticeOptions = null;
     this.resolveConnect = !1;
     this.resolveConnectTime = 5;
+    this.isLog = !0;
   }
   /**
    * @description 创建WEBSOCKET对象
@@ -187,6 +189,8 @@ export default class SocketQueue {
     const socket = options.socket;
     
     this.noticeOptions = options.notice;
+
+    Utils.isEmptyObject(options.isLog) && (Log.isLog = this.isLog);
 
     if ( Utils.isObject( socket ) ) {
       const T = socket.retime;

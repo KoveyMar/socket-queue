@@ -35,7 +35,7 @@ WS_Server.on('connection', function( ws ){
 	ws.on('message', function( msg ){
 		console.log(` SERVER GET MESSAGE ---- [${msg}] FROM ${WS_Server.host}`);
 
-		// timer = setInterval( () => {
+		timer = setTimeout( () => {
 
 			response_msg++;
 			
@@ -43,9 +43,10 @@ WS_Server.on('connection', function( ws ){
 
 			console.log(` BFFORE - SERVER SEND MESSAGE FROM ${WS_Server.host}`);
 
-			ws.send( ` node server response message is [${response_msg}] ` , (err) => {
+			ws.send( ` node server response message is [${response_msg}] to you` , (err) => {
 				console.error( `SERVER SEND MESSAGE ------- ${err}` );
 			});
-		// }, 3*10e2);
+
+		}, 3*10e2);
 	});
 });
