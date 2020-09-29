@@ -5,4 +5,4 @@
  * 
  */
 import { socketQueue } from './lib/main';
-export { socketQueue }
+export default socketQueue
