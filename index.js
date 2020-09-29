@@ -4,5 +4,5 @@
  *  @description websocket and pormise resolve
  * 
  */
-import { socketQueue } from './lib/main';
-export default socketQueue
+import SocketQueue  from './lib/main';
+export default SocketQueue;
