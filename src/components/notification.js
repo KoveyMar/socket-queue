@@ -33,12 +33,9 @@ export default class Notify {
 		};
 		this.autoClose = !0;
 		this.reverseText = !1;
-    	this.done = this.done.bind(this);
-    	this.fail = this.fail.bind(this);
-    	this.show = this.show.bind(this);
-    	this.click = this.click.bind(this);
-    	this.close = this.close.bind(this);
-    	this.error = this.error.bind(this);
+	}
+	destroy(){
+		this.ntf = null;
 	}
 	/**
 	 * @description 实例初始化成功回调
@@ -107,7 +104,8 @@ export default class Notify {
 			this.show();
 			this.autoClose && setTimeout( () => {
 				this.ntf.close();
-			}, 3000);
+				this.destroy();
+			}, 10e3);
 		}
 	}
 	/**
@@ -151,8 +149,9 @@ export default class Notify {
 		let _options = {
 			...this.options,
 			...options
-		};
-		let temp_body = _options.body, temp_title = this.title;
+		}
+		, temp_body = _options.body
+		, temp_title = this.title;
 
 		this.reverseText && 
 		(
@@ -177,7 +176,7 @@ export default class Notify {
 
 			})
 			.catch( err => {
-				Log.Warn( `Notification Could Not Resovle` );
+				Log.Warn( `Notification Could Not Resolve` );
 				this.fail( err );
 			});
 		}

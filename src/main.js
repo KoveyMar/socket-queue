@@ -22,15 +22,6 @@ export default class SocketQueue {
     this.resolveConnect = !1;
     this.resolveConnectTime = 5;
     this.isLog = !0;
-    this.open = this.open.bind(this);
-    this.closed = this.closed.bind(this);
-    this.error = this.error.bind(this);
-    this.send = this.send.bind(this);
-    this.reConnect = this.reConnect.bind(this);
-    this.getData = this.getData.bind(this);
-    this.destroy = this.destroy.bind(this);
-    this.initWSocket = this.initWSocket.bind(this);
-    this.rebuildSocket = this.rebuildSocket.bind(this);
   }
   /**
    * @description 建立WS连接后
@@ -53,11 +44,11 @@ export default class SocketQueue {
    * @param  {[type]}
    * @return {[type]}
    */
-  send(data, fun = () => {}){
-    this.WSState === 1 && (
+  send(data){
+    return this.WSState === 1 ? (
       this.socket.send(data),
-      fun()
-    );
+      Promise.resolve()
+    ) : Promise.reject();
   }
   /**
    * @description 获取接受的第一条队列数据
@@ -90,6 +81,15 @@ export default class SocketQueue {
     this.isLog = !0;
   }
   /**
+   * [initNotify 创建通知服务]
+   * @description [description]
+   * @return {[type]} [description]
+   */
+  initNotify() {
+    this.nfc = new Notify();
+    this.nfc.init(this.noticeOptions);
+  }
+  /**
    * @description 创建WEBSOCKET对象
    * @return {[type]} [description]
    */
@@ -100,7 +100,6 @@ export default class SocketQueue {
 
       this.socket.onopen = (e) => {
         Log.Info('WebSocket is connect!');
-        Log.Info('WebSocket is open!');
         const time = this.retime;
         this.resolveConnect = !1;
         this.resolveConnectTime = time;
@@ -109,7 +108,6 @@ export default class SocketQueue {
       }
 
       this.socket.onmessage = (evt) => {
-        // console.log('%O', evt)
         const data = evt.data;
         const options = {
           body: data
@@ -122,7 +120,6 @@ export default class SocketQueue {
 
       this.socket.onerror = (err) => {
         Log.Error(`WebSocket status '${err.type}' - ${err.reason}`);
-        // console.log('%O', err)
         this.WSState = err.target.readyState;
         this.rebuildSocket(err.type);
         this.error( err );
@@ -130,15 +127,12 @@ export default class SocketQueue {
 
       this.socket.onclose = (evt) => {
         Log.Warn(`WebSocket status '${evt.type}' - ${evt.reason}`);
-        // console.log('%O', evt)
         this.WSState = evt.target.readyState;
         this.rebuildSocket(evt.type);
         this.closed( evt );
       }
 
       this.queue = new Queue();
-      this.nfc = new Notify();
-      this.nfc.init(this.noticeOptions);
     }
     catch ( e ) {
       Log.Error( e );
@@ -164,7 +158,7 @@ export default class SocketQueue {
           this.reConnect(num);
           this.resolveConnect = !1;
           resolve();
-        }, 5000);
+        }, 5e3);
       });
     };
 
@@ -214,5 +208,6 @@ export default class SocketQueue {
     }
     
     this.initWSocket();
+    this.initNotify();
   }
 }

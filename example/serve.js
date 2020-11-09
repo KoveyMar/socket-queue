@@ -31,11 +31,11 @@ WS_Server.on('close', function(){
 WS_Server.on('connection', function( ws ){
 
 	console.log('SERVER CONNECTION');
-
+	// let msg = 'MSG'
 	ws.on('message', function( msg ){
 		console.log(` SERVER GET MESSAGE ---- [${msg}] FROM ${WS_Server.host}`);
 
-		timer = setTimeout( () => {
+		timer = setInterval( () => {
 
 			response_msg++;
 			
