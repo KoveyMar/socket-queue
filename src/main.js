@@ -22,6 +22,7 @@ export default class SocketQueue {
     this.resolveConnect = !1;
     this.resolveConnectTime = 5;
     this.isLog = !0;
+    this.isClose = !0;
   }
   /**
    * @description 建立WS连接后
@@ -67,6 +68,7 @@ export default class SocketQueue {
    * @return {[type]}
    */
   destroy(){
+    this.isClose = !1;
     this.socket && this.socket.close();
     this.socket = null;
     this.queue = null;
@@ -127,8 +129,10 @@ export default class SocketQueue {
 
       this.socket.onclose = (evt) => {
         Log.Warn(`WebSocket status '${evt.type}' - ${evt.reason}`);
-        this.WSState = evt.target.readyState;
-        this.rebuildSocket(evt.type);
+        this.isClose && (
+          this.rebuildSocket(evt.type),
+          this.WSState = evt.target.readyState
+        );
         this.closed( evt );
       }
 
