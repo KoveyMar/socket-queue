@@ -1,14 +1,16 @@
 {
-  "name": "ws-socket-queue",
-  "version": "1.1.73",
+  "name": "@types/ws-socket-queue",
+  "version": "1.1.74",
   "description": "socket message queue",
   "main": "index.js",
-  "typings": "index.js",
+  "typings": "lib/main.d.ts",
+  "types": "lib/main.d.ts",
   "scripts": {
     "build": "npx babel src/ --out-dir lib",
     "typeTest": "npx typescript src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir types",
     "types": "npx tsc",
     "dopublish": "npm run build && npm publish",
+    "publish": "npm publish --access=public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -35,5 +37,7 @@
     "ts-node": "^9.0.0",
     "typescript": "^4.1.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "types-registry": "^0.1.517"
+  }
 }

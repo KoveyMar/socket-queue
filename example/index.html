@@ -118,6 +118,11 @@
 		.type-list li a {
 			color: #217dc4;
 		}
+		.type-list li .des_p{
+			padding-left: 5px;
+			line-height: 30px;
+			margin: 10px 0;
+		}
 		@media screen and (max-width: 768px) {
 			aside {
 				display: none;
@@ -140,7 +145,7 @@
 	</main>
 	<script>
 		let JDATA = {
-			version: '1.0.0',
+			version: '1.1.7',
 			mainText: [
 				{
 					title: '概述',
@@ -373,7 +378,14 @@
 				{
 					title: '历史版本',
 					id: 'version',
-					description: ['1.0.0', '1.1.0', '1.1.2', '1.1.5', '1.1.6', '1.1.71', '1.1.72']
+					description: [
+						`1.0.0 <p class='des_p'>alpha初始版本</p>`, 
+						`1.1.0 <p class='des_p'>正式版本</p>`, 
+						`1.1.2`, 
+						`1.1.5 <p class='des_p'>WebSocket Notification 增加回调函数</p>`, 
+						`1.1.6 <p class='des_p'>修复已知BUG</p>`, 
+						`1.1.71 <p class='des_p'>修复调用close 事件,发生重复开启的BUG</p>`, 
+					]
 				},
 				{
 					title: '参考文献',
