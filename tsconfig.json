@@ -1,18 +1,14 @@
 {
   "compilerOptions": {
+    "declaration": true,
     "module": "commonjs",
-    "target": "ES2019",
-    "outDir": "dist",  
-    "rootDir": "src", 
-    "baseUrl": "./",
-    "paths": {
-      "*": ["types/*"]
-    }
+    "removeComments": true,
+    "noImplicitAny": false,
+    "target": "ES5",
+    "outDir": "./lib",
+    "allowJs": true,
+    "baseUrl": "."
   },
-  "include": [
-  	"src/**/*.ts"
-  ],
-  "exclude": [
-  	"node_modules/**"
-  ]
+  "include": [ "./types/**/*.ts" ],
+  "exclude": [ "./node_modules/**", "./src", "./lib", "./example", ]
 }
