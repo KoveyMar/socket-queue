@@ -9,6 +9,12 @@ function getProto( obj ){
 	return Object.prototype.toString.call( obj );
 }
 
+function setFunction( data, extendsObject, proto ) {
+	for (let item of data) {
+		extendsObject[item] = isFunction(proto[item]) ? proto[item] : new Function();
+	}
+}
+
 function getType( obj) {
 	let _def_type = getProto( obj );
 	return _def_type.substring(8, _def_type.length - 1);
@@ -49,6 +55,7 @@ function isNumber( number ) {
 
 export default {
 	getType: getType,
+	setFunction: setFunction,
 	throwType: throwType,
 	isObject: isObject,
 	isFunction: isFunction,

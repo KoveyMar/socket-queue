@@ -198,9 +198,7 @@ export default class SocketQueue {
       this.retime = Utils.isNumber(T) && T <= 5 ? T : 5;
       temp_time = this.retime;
       this.resolveConnectTime = temp_time;
-      this.open = Utils.isFunction(socket.open) ? socket.open : new Function();
-      this.closed = Utils.isFunction(socket.closed) ? socket.closed : new Function();
-      this.error = Utils.isFunction(socket.error) ? socket.error : new Function();
+      Utils.setFunction(['open', 'closed', 'error'], this, socket);
     }
 
     Utils.isString( socket ) && (this.url = socket);

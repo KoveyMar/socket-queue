@@ -135,12 +135,7 @@ export default class Notify {
 			this.options = notice.options || this.options;
 			this.autoClose = !Utils.isEmptyObject(notice.autoClose) ? notice.autoClose : !0;
 			this.reverseText = Utils.isEmptyObject(notice.reverseText) ? !1 : notice.reverseText;
-			this.done = Utils.isFunction(notice.done) ? notice.done : new Function();
-			this.fail = Utils.isFunction(notice.fail) ? notice.fail : new Function();
-			this.close = Utils.isFunction(notice.OnClose) ? notice.OnClose : new Function();
-			this.show = Utils.isFunction(notice.OnShow) ? notice.OnShow : new Function();
-			this.click = Utils.isFunction(notice.OnClick) ? notice.OnClick : new Function();
-			this.error = Utils.isFunction(notice.OnError) ? notice.OnError : new Function();
+			Utils.setFunction(['done', 'fail', 'close', 'show', 'click', 'error'], this, notice);
 		}
 		(Notification.permission === 'denied' || Notification.permission === 'default') && Notification.requestPermission();
 	}

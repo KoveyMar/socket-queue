@@ -1,5 +1,5 @@
 {
-  "name": "@types/ws-socket-queue",
+  "name": "ws-socket-queue",
   "version": "1.1.74",
   "description": "socket message queue",
   "main": "index.js",
@@ -9,8 +9,7 @@
     "build": "npx babel src/ --out-dir lib",
     "typeTest": "npx typescript src/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir types",
     "types": "npx tsc",
-    "dopublish": "npm run build && npm publish",
-    "publish": "npm publish --access=public",
+    "dopublish": "npm publish --access=public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
