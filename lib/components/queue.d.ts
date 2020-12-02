@@ -3,10 +3,10 @@ declare class T {
 }
 declare class Queue extends T {
     constructor();
-    add(item: any): any;
+    add(item: any): number;
     isEmpty(): boolean;
-    next(): Function;
-    get size(): any;
-    removeLastChild(item: any): Function;
+    next(): null | object;
+    get size(): number;
+    removeLastChild(): number;
 }
 export default Queue;

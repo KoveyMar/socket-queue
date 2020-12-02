@@ -1,4 +1,4 @@
-interface options {
+interface NotificationOption {
     dir: string;
     lang: string;
     badge: string;
@@ -11,29 +11,29 @@ interface options {
     renotify: boolean;
     requireInteraction: boolean;
 }
-declare class T {
+declare class T<htmlOption = NotificationOption> {
     ntf: any;
     title: string;
-    noticeOptions: any;
-    options: options;
+    noticeOptions: object;
+    options: htmlOption;
     autoClose: boolean;
     reverseText: boolean;
 }
 declare class Notify extends T {
     constructor();
     destroy(): any;
-    done(notification: any): void;
-    fail(error: any): void;
-    show(): void;
-    click(): void;
-    close(): void;
-    error(event: any): void;
+    done(notification: any): any;
+    fail(error: any): any;
+    show(): any;
+    click(): any;
+    close(): any;
+    error(event: any): any;
     closeEvt(): void;
-    errorEvt(): any;
-    clickEvt(): any;
-    showEvt(): any;
-    stateDispatch(): any;
-    init(notice: any): any;
-    showNotification(options: any): any;
+    errorEvt(): void;
+    clickEvt(): void;
+    showEvt(): void;
+    stateDispatch(): void;
+    init<Notice extends T>(notice: Notice): void;
+    showNotification(options: any): void;
 }
 export default Notify;

@@ -15,11 +15,16 @@ class Log extends T {
 
 	static isLog: boolean = !0;
 
+	/**
+	 * @param {boolean} value 是否打印日志
+	 */
 	set isLog(value: boolean) {
 		this.isLog = value;
 	}
-
-	get isLog() {
+	/**
+	 * @return {boolean}
+	 */
+	get isLog(): boolean {
 		return this.isLog;
 	}
 

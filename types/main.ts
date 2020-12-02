@@ -41,26 +41,26 @@ class SocketQueue extends socket {
   }
   /**
    * @description 建立WS连接后
-   * @return {[type]}
+   * @return {void}
    */
   open(event: any): void{}
   /**
    * @description 连接关闭后
-   * @return {[type]}
+   * @return {void}
    */
   closed(e: any): void{}
   /**
    * @description 断线重连回调
    * @param  {[type]} number [次数]
-   * @return {[type]}        [description]
+   * @return {void}        [description]
    */
   reConnect(number: number): void{}
   /**
    * @description 发送WS数据
    * @param  {[type]}
-   * @return {[type]}
+   * @return {any}
    */
-  send(data: any): any{
+  send(data: any): any {
     return this.WSState === 1 ? (
       this.socket.send(data),
       Promise.resolve()
@@ -70,19 +70,19 @@ class SocketQueue extends socket {
    * @description 获取接受的第一条队列数据
    * @return 返回队列的第一条数据
    */
-  getData(): Function{
+  getData(): object {
     return this.queue.next();
   }
   /**
    * @description 发送错误时回调
-   * @return {[type]}
+   * @return {void}
    */
   error(err: any): void{}
   /**
    * @description 销毁当前WS调用实例
-   * @return {[type]}
+   * @return {void}
    */
-  destroy(): any{
+  destroy(): void {
     this.isClose = !1;
     this.socket && this.socket.close();
     this.socket = null;
@@ -100,17 +100,17 @@ class SocketQueue extends socket {
   /**
    * [initNotify 创建通知服务]
    * @description [description]
-   * @return {[type]} [description]
+   * @return {void} [description]
    */
-  initNotify(): any {
+  initNotify(): void {
     this.nfc = new Notify();
     this.nfc.init(this.noticeOptions);
   }
   /**
    * @description 创建WEBSOCKET对象
-   * @return {[type]} [description]
+   * @return {void} [description]
    */
-  initWSocket(): any{
+  initWSocket(): void {
     try {
       this.socket = new WebSocket( this.url, this.protocol );
       Log.Info('WebSocket is created');
@@ -159,9 +159,9 @@ class SocketQueue extends socket {
   }
   /**
    * @description 断线重连
-   * @return {[type]}
+   * @return {void}
    */
-  rebuildSocket(service: string): Function{
+  rebuildSocket(service: string): void {
     if (this.resolveConnect) return;
     
     this.resolveConnect = !0;
@@ -189,9 +189,9 @@ class SocketQueue extends socket {
   /**
    * [init description]
    * @param  {Object} options [description]
-   * @return {[type]}         [description]
+   * @return {void}         [description]
    */
-  init( options: any ): any{
+  init( options: any ): void{
     if ( !('WebSocket' in window) ) {
       return Log.Warn(`Your Browser Dose Not Support WebSocket`);
     }

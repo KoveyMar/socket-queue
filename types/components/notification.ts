@@ -7,7 +7,7 @@
 import Log from './log';
 import Utils from './utils';
 
-interface options {
+interface NotificationOption {
 	dir: string;
 	lang: string;
 	badge: string;
@@ -21,24 +21,23 @@ interface options {
 	requireInteraction: boolean;
 }
 
-class T {
+class T<htmlOption = NotificationOption> {
 	ntf: any;
 	title: string;
-	noticeOptions: any;
-	options: options;
+	noticeOptions: object;
+	options: htmlOption;
 	autoClose: boolean;
 	reverseText: boolean;
 }
 
-class Notify extends T{
+class Notify extends T {
 	/**
 	 * [constructor description]
 	 * @attribute [noticeOptions] 	实例对象接收配置
 	 * @attribute [options]			默认配置参数
 	 * @attribute [autoClose]		是否自动关闭
-	 * @return {[type]} [description]
 	 */
-	constructor(){
+	constructor() {
 		super();
 		this.ntf = null;
 		this.title = '新的socket消息';
@@ -59,62 +58,68 @@ class Notify extends T{
 		this.autoClose = !0;
 		this.reverseText = !1;
 	}
-	destroy(): any{
+	/**
+	 * @default	销毁示例
+	 * @return {any}
+	 */
+	destroy(): any {
 		this.ntf = null;
+		this.autoClose = !0;
+		this.reverseText = !1;
 	}
 	/**
 	 * @description 实例初始化成功回调
-	 * @return {Function}
+	 * @return {any}
 	 */
-	done(notification: any): void{}
+	done(notification: any): any{}
 	/**
 	 * @description 实例初始化失败回调
-	 * @return {[type]}
+	 * @return {any}
 	 */
-	fail(error: any): void{}
+	fail(error: any): any{}
 	/**
 	 * @description 通知显示时，实例回调
-	 * @return {[type]}
+	 * @return {any}
 	 */
-	show(): void{}
+	show(): any{}
 	/**
 	 * @description 点击通知时，实例回调
-	 * @return {[type]}
+	 * @return {any}
 	 */
-	click(): void{}
+	click(): any{}
 	/**
 	 * @description 关闭通知时，实例回调
-	 * @return {[type]}
+	 * @return {any}
 	 */
-	close(): void{}
+	close(): any{}
 	/**
 	 * @description 发送错误时，实例回调
-	 * @return {[type]}
+	 * @return {any}
 	 */
-	error(event: any): void{}
+	error(event: any): any{}
 	/**
 	 * @description 关闭事件
-	 * @return {[type]}
+	 * @return {void}
 	 */
-	closeEvt(): void{
+	closeEvt(): void {
 		this.ntf.onclose = () => {
 			this.close();
 		}
 	}
 	/**
 	 * @description 错误事件
-	 * @return {[type]} [description]
+	 * @return {void} [description]
 	 */
-	errorEvt(): any{
+	errorEvt(): void {
 		this.ntf.onerror = (e: any) => {
 			this.error(e);
 		}
 	}
 	/**
 	 * @description 点击事件
-	 * @return {[type]} [description]
+	 * @return {void} [description]
 	 */
-	clickEvt(): any{
+	clickEvt(): void {
 		this.ntf.onclick = (e: any) => {
 			e.preventDefault();
 			this.click();
@@ -122,9 +127,9 @@ class Notify extends T{
 	}
 	/**
 	 * 显示弹窗事件
-	 * @return {[type]} [description]
+	 * @return {void} [description]
 	 */
-	showEvt(): any{
+	showEvt(): void {
 		this.ntf.onshow = () => {
 			this.show();
 			this.autoClose && setTimeout( () => {
@@ -136,7 +141,7 @@ class Notify extends T{
 	/**
 	 * @description 事件分发
 	 */
-	stateDispatch(): any{
+	stateDispatch(): void {
 		this.closeEvt();
 		this.errorEvt();
 		this.clickEvt();
@@ -144,9 +149,9 @@ class Notify extends T{
 	}
 	/**
 	 * @param  notice {Object} { dir: 'auto', lang: '', tag: 'ID', body: 'body', icon: 'URL'}
-	 * @return {[type]}
+	 * @return {void}
 	 */
-	init(notice: any): any{
+	init<Notice extends T>(notice: Notice): void {
 		if ( !("Notification" in window) ) {
 			return Log.Warn( `Your Browser Does Not Support Desktop Notification` );
 		}
@@ -168,7 +173,7 @@ class Notify extends T{
 	 * @name	show Notification In Browser
 	 * @param options 
 	 */
-	showNotification( options: any ): any{
+	showNotification( options: any ): void {
 
 		let _options = {
 			...this.options,

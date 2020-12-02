@@ -5,22 +5,23 @@
  * 
  */
 import Log from './log';
-function getProto( obj: any ): string {
+
+export function getProto( obj: any ): string {
 	return Object.prototype.toString.call( obj );
 }
 
-function setFunction( data: string[], extendsObject: any, proto: any ): any {
+export function setFunction( data: string[], extendsObject: any, proto: any ): void {
 	for (let item of data) {
 		extendsObject[item] = isFunction(proto[item]) ? proto[item] : new Function();
 	}
 }
 
-function getType( obj: any): string {
+export function getType( obj: any): string {
 	let _def_type = getProto( obj );
 	return _def_type.substring(8, _def_type.length - 1);
 }
 
-function throwType(obj: any, objName: string, callback?: Function ): any {	
+export function throwType(obj: any, objName: string, callback?: Function ): void {	
 	let obj_type = callback,
 		proto_type = getType(obj);
 	try {
@@ -33,23 +34,23 @@ function throwType(obj: any, objName: string, callback?: Function ): any {
 	}
 }
 
-function isObject( obj: any ): Boolean {
+export function isObject( obj: any ): boolean {
 	return getProto( obj ) === "[object Object]";
 }
 
-function isFunction( fn: Function ): Boolean {
+export function isFunction( fn: Function ): boolean {
 	return getProto( fn ) === "[object Function]";
 }
 
-function isString( str: string ): Boolean {
+export function isString( str: string ): boolean {
 	return typeof str === 'string';
 }
 
-function isEmptyObject( obj: any ): Boolean {
+export function isEmptyObject( obj: any ): boolean {
 	return obj === null || (obj === void 0 && typeof obj === 'undefined');
 }
 
-function isNumber( number: number ): Boolean {
+export function isNumber( number: number ): boolean {
 	return !Number.isNaN( Number( number ) ) && typeof number === 'number';
 }
 

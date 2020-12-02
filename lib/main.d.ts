@@ -18,12 +18,12 @@ declare class SocketQueue extends socket {
     closed(e: any): void;
     reConnect(number: number): void;
     send(data: any): any;
-    getData(): Function;
+    getData(): object;
     error(err: any): void;
-    destroy(): any;
-    initNotify(): any;
-    initWSocket(): any;
-    rebuildSocket(service: string): Function;
-    init(options: any): any;
+    destroy(): void;
+    initNotify(): void;
+    initWSocket(): void;
+    rebuildSocket(service: string): void;
+    init(options: any): void;
 }
 export default SocketQueue;

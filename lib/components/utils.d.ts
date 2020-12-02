@@ -1,11 +1,12 @@
-declare function setFunction(data: string[], extendsObject: any, proto: any): any;
-declare function getType(obj: any): string;
-declare function throwType(obj: any, objName: string, callback?: Function): any;
-declare function isObject(obj: any): Boolean;
-declare function isFunction(fn: Function): Boolean;
-declare function isString(str: string): Boolean;
-declare function isEmptyObject(obj: any): Boolean;
-declare function isNumber(number: number): Boolean;
+export declare function getProto(obj: any): string;
+export declare function setFunction(data: string[], extendsObject: any, proto: any): void;
+export declare function getType(obj: any): string;
+export declare function throwType(obj: any, objName: string, callback?: Function): void;
+export declare function isObject(obj: any): boolean;
+export declare function isFunction(fn: Function): boolean;
+export declare function isString(str: string): boolean;
+export declare function isEmptyObject(obj: any): boolean;
+export declare function isNumber(number: number): boolean;
 declare const _default: {
     getType: typeof getType;
     setFunction: typeof setFunction;
