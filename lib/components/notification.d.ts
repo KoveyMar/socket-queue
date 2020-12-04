@@ -33,7 +33,7 @@ declare class Notify extends T {
     clickEvt(): void;
     showEvt(): void;
     stateDispatch(): void;
-    init<Notice extends T>(notice: Notice): void;
+    init<Notice extends T>(notice: Notice): Promise<any>;
     showNotification(options: any): void;
 }
 export default Notify;

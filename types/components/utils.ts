@@ -10,18 +10,26 @@ export function getProto( obj: any ): string {
 	return Object.prototype.toString.call( obj );
 }
 
+export function jsonSwitch( obj: object ): string {
+	return JSON.stringify(obj);
+}
+
+export function getString( obj: any, replaceString?: string | undefined ): string {
+	return isRefTypes(obj) ? jsonSwitch(obj) : ( isEmptyObject(obj) ? ( replaceString || '' ) : obj.toString());
+}
+
 export function setFunction( data: string[], extendsObject: any, proto: any ): void {
 	for (let item of data) {
 		extendsObject[item] = isFunction(proto[item]) ? proto[item] : new Function();
 	}
 }
 
-export function getType( obj: any): string {
+export function getType( obj: any ): string {
 	let _def_type = getProto( obj );
 	return _def_type.substring(8, _def_type.length - 1);
 }
 
-export function throwType(obj: any, objName: string, callback?: Function ): void {	
+export function throwType( obj: any, objName: string, callback?: Function ): void {	
 	let obj_type = callback,
 		proto_type = getType(obj);
 	try {
@@ -32,6 +40,15 @@ export function throwType(obj: any, objName: string, callback?: Function ): void
 	catch ( err: any ) {
 		Log.Error( err );
 	}
+}
+
+export function isRefTypes( obj: any ) {
+	let type = [ 'Number', 'String', 'Boolean', 'Undefined', 'Null' ]
+		, flag = !0;
+	for (let j of type) {
+		getProto(obj) == `[object ${j}]` && ( flag = !1 );
+	}
+	return flag;
 }
 
 export function isObject( obj: any ): boolean {
@@ -56,8 +73,10 @@ export function isNumber( number: number ): boolean {
 
 export default {
 	getType: getType,
+	getString: getString,
 	setFunction: setFunction,
 	throwType: throwType,
+	isRefTypes: isRefTypes,
 	isObject: isObject,
 	isFunction: isFunction,
 	isString: isString,

@@ -151,9 +151,9 @@ class Notify extends T {
 	 * @param  notice {Object} { dir: 'auto', lang: '', tag: 'ID', body: 'body', icon: 'URL'}
 	 * @return {void}
 	 */
-	init<Notice extends T>(notice: Notice): void {
+	init<Notice extends T>(notice: Notice): Promise<any> {
 		if ( !("Notification" in window) ) {
-			return Log.Warn( `Your Browser Does Not Support Desktop Notification` );
+			return Log.Warn( `Your Browser Does Not Support Desktop Notification` ), Promise.reject();
 		}
 
 		Utils.isEmptyObject(notice) && Log.Warn( `Notification Resovle Default Options` );
@@ -167,7 +167,7 @@ class Notify extends T {
 			this.reverseText = Utils.isEmptyObject(notice.reverseText) ? !1 : notice.reverseText;
 			Utils.setFunction(['done', 'fail', 'close', 'show', 'click', 'error'], this, notice);
 		}
-		(Notification.permission === 'denied' || Notification.permission === 'default') && Notification.requestPermission();
+		return (Notification.permission === 'denied' || Notification.permission === 'default') && Notification.requestPermission();
 	}
 	/**
 	 * @name	show Notification In Browser

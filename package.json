@@ -1,6 +1,6 @@
 {
   "name": "ws-socket-queue",
-  "version": "1.1.74",
+  "version": "1.1.75",
   "description": "socket message queue",
   "main": "index.js",
   "typings": "lib/main.d.ts",

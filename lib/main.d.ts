@@ -21,9 +21,9 @@ declare class SocketQueue extends socket {
     getData(): object;
     error(err: any): void;
     destroy(): void;
-    initNotify(): void;
-    initWSocket(): void;
-    rebuildSocket(service: string): void;
-    init(options: any): void;
+    initNotify(): any;
+    initWSocket(): any;
+    rebuildSocket(service: string): boolean;
+    init(options: any): any;
 }
 export default SocketQueue;

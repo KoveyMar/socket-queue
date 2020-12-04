@@ -1,7 +1,10 @@
 export declare function getProto(obj: any): string;
+export declare function jsonSwitch(obj: object): string;
+export declare function getString(obj: any, replaceString?: string | undefined): string;
 export declare function setFunction(data: string[], extendsObject: any, proto: any): void;
 export declare function getType(obj: any): string;
 export declare function throwType(obj: any, objName: string, callback?: Function): void;
+export declare function isRefTypes(obj: any): boolean;
 export declare function isObject(obj: any): boolean;
 export declare function isFunction(fn: Function): boolean;
 export declare function isString(str: string): boolean;
@@ -9,8 +12,10 @@ export declare function isEmptyObject(obj: any): boolean;
 export declare function isNumber(number: number): boolean;
 declare const _default: {
     getType: typeof getType;
+    getString: typeof getString;
     setFunction: typeof setFunction;
     throwType: typeof throwType;
+    isRefTypes: typeof isRefTypes;
     isObject: typeof isObject;
     isFunction: typeof isFunction;
     isString: typeof isString;

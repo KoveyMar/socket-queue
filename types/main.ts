@@ -8,6 +8,12 @@ import Queue from './components/queue';
 import Notify from './components/notification';
 import Log from './components/log';
 import Utils from './components/utils';
+interface eventResponse {
+  data?: any;
+  type: string;
+  reason: any;
+  target: any;
+}
 class socket {
   socket: any;
   url: string;
@@ -102,29 +108,30 @@ class SocketQueue extends socket {
    * @description [description]
    * @return {void} [description]
    */
-  initNotify(): void {
+  initNotify(): any {
     this.nfc = new Notify();
     this.nfc.init(this.noticeOptions);
+    return this.nfc;
   }
   /**
    * @description 创建WEBSOCKET对象
-   * @return {void} [description]
+   * @return {any} [description]
    */
-  initWSocket(): void {
+  initWSocket(): any {
     try {
       this.socket = new WebSocket( this.url, this.protocol );
       Log.Info('WebSocket is created');
 
-      this.socket.onopen = (e: any) => {
+      this.socket.onopen = (evt: eventResponse) => {
         Log.Info('WebSocket is connect!');
         const time = this.retime;
         this.resolveConnect = !1;
         this.resolveConnectTime = time;
-        this.WSState = e.target.readyState;
-        this.open(e);
+        this.WSState = evt.target.readyState;
+        this.open(evt);
       }
 
-      this.socket.onmessage = (evt: { data: any; type: any; }) => {
+      this.socket.onmessage = (evt: eventResponse) => {
         const data = evt.data;
         const options = {
           body: data
@@ -132,18 +139,18 @@ class SocketQueue extends socket {
         // this.queue.add( { data: data, response: evt } );
         this.queue.add( data );
         this.nfc.showNotification(options);
-        Log.Info(`WebSocket status '${evt.type}', New Message - ${data}`);
+        Log.Info(`WebSocket status '${evt.type}', New Message - ${Utils.getString(data)}`);
       }
 
-      this.socket.onerror = (err: { type: string; reason: any; target: { readyState: number; }; }) => {
-        Log.Error(`WebSocket status '${err.type}' - ${err.reason}`);
+      this.socket.onerror = (err: eventResponse) => {
+        Log.Error(`WebSocket status '${err.type}' - ${Utils.getString(err.reason, '未知错误')}`);
         this.WSState = err.target.readyState;
         this.rebuildSocket(err.type);
         this.error( err );
       }
 
-      this.socket.onclose = (evt: { type: string; reason: any; target: { readyState: number; }; }) => {
-        Log.Warn(`WebSocket status '${evt.type}' - ${evt.reason}`);
+      this.socket.onclose = (evt: eventResponse) => {
+        Log.Warn(`WebSocket status '${evt.type}' - ${Utils.getString(evt.reason, '未知错误导致关闭')}`);
         this.isClose && (
           this.rebuildSocket(evt.type),
           this.WSState = evt.target.readyState
@@ -156,12 +163,14 @@ class SocketQueue extends socket {
     catch ( e ) {
       Log.Error( e );
     }
+
+    return this;
   }
   /**
    * @description 断线重连
-   * @return {void}
+   * @return {boolean}
    */
-  rebuildSocket(service: string): void {
+  rebuildSocket(service: string): boolean {
     if (this.resolveConnect) return;
     
     this.resolveConnect = !0;
@@ -185,13 +194,15 @@ class SocketQueue extends socket {
 
     this.resolveConnectTime--;
 
+    return !0;
+
   }
   /**
    * [init description]
    * @param  {Object} options [description]
-   * @return {void}         [description]
+   * @return {any}         [description]
    */
-  init( options: any ): void{
+  init( options: any ): any {
     if ( !('WebSocket' in window) ) {
       return Log.Warn(`Your Browser Dose Not Support WebSocket`);
     }
@@ -226,6 +237,8 @@ class SocketQueue extends socket {
     
     this.initWSocket();
     this.initNotify();
+
+    return this
   }
 }
 
