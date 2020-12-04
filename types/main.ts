@@ -66,7 +66,7 @@ class SocketQueue extends socket {
    * @param  {[type]}
    * @return {any}
    */
-  send(data: any): any {
+  send(data: any): Promise<any> {
     return this.WSState === 1 ? (
       this.socket.send(data),
       Promise.resolve()
@@ -177,7 +177,7 @@ class SocketQueue extends socket {
 
     let timer = null;
 
-    const FN = (num: number) => {
+    const FN = (num: number): Promise<any> => {
       return new Promise( ( resolve: any, reject: any ) => {
         Log.Info(`WebSocket trying to reconnect...`);
         timer = setTimeout( () => {
