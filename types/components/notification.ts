@@ -59,7 +59,7 @@ class Notify extends T {
 		this.reverseText = !1;
 	}
 	/**
-	 * @default	销毁示例
+	 * @description	销毁示例
 	 * @return {any}
 	 */
 	destroy(): any {
@@ -126,7 +126,7 @@ class Notify extends T {
 		} 
 	}
 	/**
-	 * 显示弹窗事件
+	 * @description	显示弹窗事件
 	 * @return {void} [description]
 	 */
 	showEvt(): void {
@@ -135,7 +135,7 @@ class Notify extends T {
 			this.autoClose && setTimeout( () => {
 				this.ntf.close();
 				this.destroy();
-			}, 10e3);
+			}, 1e4);
 		}
 	}
 	/**
@@ -148,6 +148,7 @@ class Notify extends T {
 		this.showEvt();
 	}
 	/**
+	 * @description	开启通知权限
 	 * @param  notice {Object} { dir: 'auto', lang: '', tag: 'ID', body: 'body', icon: 'URL'}
 	 * @return {void}
 	 */
@@ -156,7 +157,7 @@ class Notify extends T {
 			return Log.Warn( `Your Browser Does Not Support Desktop Notification` ), Promise.reject();
 		}
 
-		Utils.isEmptyObject(notice) && Log.Warn( `Notification Resovle Default Options` );
+		Utils.isEmptyObject(notice) && Log.Info( `Notification Resovle Default Options` );
 
 		if ( Utils.isObject(notice) ) {
 			Log.Warn(`Notification Resovle Options`);
@@ -171,6 +172,7 @@ class Notify extends T {
 	}
 	/**
 	 * @name	show Notification In Browser
+	 * @description	显示通知
 	 * @param options 
 	 */
 	showNotification( options: any ): void {

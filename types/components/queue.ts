@@ -10,7 +10,7 @@ class T {
 class Queue extends T {
 	constructor(){
 		super();
-		this.item_queue= [];
+		this.item_queue = [];
 	}
 	/**
 	 * @description 添加数据到队列
