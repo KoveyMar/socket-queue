@@ -42,7 +42,7 @@ export function throwType( obj: any, objName: string, callback?: Function ): voi
 	}
 }
 
-export function isRefTypes( obj: any ) {
+export function isRefTypes( obj: any ): boolean {
 	let type = [ 'Number', 'String', 'Boolean', 'Undefined', 'Null' ]
 		, flag = !0;
 	for (let j of type) {
