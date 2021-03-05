@@ -294,11 +294,11 @@
 									explain: 'callback WS重连时的回调'
 								},
 								{
-									name: 'destroy',
+									name: 'message',
 									type: 'Function',
 									require: !1,
-									explain: 'callback WS重连时的回调'
-								},
+									explain: 'callback WS获取消息时回调'
+								}
 							]
 						},
 						{
@@ -385,6 +385,7 @@
 						`1.1.5 <p class='des_p'>WebSocket Notification 增加回调函数</p>`, 
 						`1.1.6 <p class='des_p'>修复已知BUG</p>`, 
 						`1.1.71 <p class='des_p'>修复调用close 事件,发生重复开启的BUG</p>`, 
+						`1.1.8 <p class='des_p'>修复API相关错误信息,增加接收消息后的回调</p>`, 
 					]
 				},
 				{

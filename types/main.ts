@@ -56,6 +56,16 @@ class SocketQueue extends socket {
    */
   closed(e: any): void{}
   /**
+   * @description 发送错误时回调
+   * @return {void}
+   */
+  error(err: any): void{}
+  /**
+   * @description 接收消息回调
+   * @param msg 
+   */
+  message(msg: any): void {}
+  /**
    * @description 断线重连回调
    * @param  {[type]} number [次数]
    * @return {void}        [description]
@@ -79,11 +89,6 @@ class SocketQueue extends socket {
   getData(): object {
     return this.queue.next();
   }
-  /**
-   * @description 发送错误时回调
-   * @return {void}
-   */
-  error(err: any): void{}
   /**
    * @description 销毁当前WS调用实例
    * @return {void}
@@ -140,6 +145,7 @@ class SocketQueue extends socket {
         this.queue.add( data );
         this.nfc.showNotification(options);
         Log.Info(`WebSocket status '${evt.type}', New Message - ${Utils.getString(data)}`);
+        this.message(evt);
       }
 
       this.socket.onerror = (err: eventResponse) => {
@@ -224,7 +230,7 @@ class SocketQueue extends socket {
       this.retime = Utils.isNumber(T) && T <= 5 ? T : 5;
       temp_time = this.retime;
       this.resolveConnectTime = temp_time;
-      Utils.setFunction(['open', 'closed', 'error'], this, socket);
+      Utils.setFunction(['open', 'closed', 'error', 'message', 'reConnect'], this, socket);
     }
 
     Utils.isString( socket ) && (this.url = socket);

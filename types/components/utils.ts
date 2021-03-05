@@ -72,14 +72,14 @@ export function isNumber( number: number ): boolean {
 }
 
 export default {
-	getType: getType,
-	getString: getString,
-	setFunction: setFunction,
-	throwType: throwType,
-	isRefTypes: isRefTypes,
-	isObject: isObject,
-	isFunction: isFunction,
-	isString: isString,
-	isEmptyObject: isEmptyObject,
-	isNumber: isNumber
+	getType,
+	getString,
+	setFunction,
+	throwType,
+	isRefTypes,
+	isObject,
+	isFunction,
+	isString,
+	isEmptyObject,
+	isNumber
 }

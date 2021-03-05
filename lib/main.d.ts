@@ -16,10 +16,11 @@ declare class SocketQueue extends socket {
     constructor();
     open(event: any): void;
     closed(e: any): void;
-    reConnect(number: number): void;
-    send(data: any): any;
-    getData(): object;
     error(err: any): void;
+    message(msg: any): void;
+    reConnect(number: number): void;
+    send(data: any): Promise<any>;
+    getData(): object;
     destroy(): void;
     initNotify(): any;
     initWSocket(): any;
